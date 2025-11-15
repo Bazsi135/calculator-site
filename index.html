@@ -1,0 +1,2969 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Kalkulátor - Minden számítás egy helyen</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fb 0%, #e4e8f5 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #555;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: var(--box-shadow);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-box button:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Categories section */
+        .categories {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+            font-size: 2rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Kategória színek (ÚJ) */
+        .category-card[data-category="finance"] .category-icon { color: var(--primary-color); }
+        .category-card[data-category="health"] .category-icon { color: var(--warning-color); }
+        .category-card[data-category="real-estate"] .category-icon { color: #00b894; } /* Kékesszöld */
+        .category-card[data-category="auto"] .category-icon { color: #fdcb6e; } /* Sárga */
+        .category-card[data-category="education"] .category-icon { color: #6c5ce7; } /* Lila */
+        .category-card[data-category="engineering"] .category-icon { color: #e17055; } /* Rozsdavörös */
+        .category-card[data-category="business"] .category-icon { color: #f77f00; } /* Narancs */
+        .category-card[data-category="time"] .category-icon { color: #00cec9; } /* Türkiz */
+
+        .category-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Calculators section */
+        .calculators {
+            padding: 3rem 0;
+        }
+
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .calculator-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .calculator-card .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .calculator-card .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Calculator Modal */
+        .calculator-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .calculator-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-modal:hover {
+            color: var(--dark-color);
+        }
+
+        .calculator-form {
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .calculator-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f0f8ff;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .calculator-result h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Ads section */
+        .ads {
+            padding: 2rem 0;
+        }
+
+        .ad-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .ad-placeholder {
+            background: #f0f0f0;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            color: #888;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--success-color);
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .calculator-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-calculator"></i>
+                    <span>100Calculator</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Főoldal</a></li>
+                        <li><a href="#categories">Kategóriák</a></li>
+                        <li><a href="#calculators">Kalkulátorok</a></li>
+                        <li><a href="#about">Rólunk</a></li>
+                        <li><a href="#contact">Kapcsolat</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>100 Kalkulátor - Minden számítás egy helyen</h1>
+            <p>Fedezze fel 100 különböző kalkulátorunkat, amelyek segítenek a mindennapi számításokban, pénzügyekben, egészségben és még sok más területen.</p>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Keressen kalkulátort...">
+                <button id="search-button"><i class="fas fa-search"></i> Keresés</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories" id="categories">
+        <div class="container">
+            <h2 class="section-title">Kategóriák</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="finance">
+                    <div class="category-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Pénzügy</h3>
+                    <p>Hitel, megtakarítás, befektetés</p>
+                </div>
+                <div class="category-card" data-category="health">
+                    <div class="category-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Egészség</h3>
+                    <p>BMI, kalória, testzsír</p>
+                </div>
+                <div class="category-card" data-category="real-estate">
+                    <div class="category-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Ingatlan</h3>
+                    <p>Jelzálog, adók, költségek</p>
+                </div>
+                <div class="category-card" data-category="auto">
+                    <div class="category-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>Autó</h3>
+                    <p>Üzemanyag, költségek, értékcsökkenés</p>
+                </div>
+                <div class="category-card" data-category="education">
+                    <div class="category-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Oktatás</h3>
+                    <p>Jegyek, átlag, konverziók</p>
+                </div>
+                <div class="category-card" data-category="engineering">
+                    <div class="category-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>Mérnöki</h3>
+                    <p>Méretek, tervezés, számítások</p>
+                </div>
+                <div class="category-card" data-category="business">
+                    <div class="category-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Üzlet és Pénzügy</h3>
+                    <p>Profit, ÁFA, Árrés</p>
+                </div>
+                <div class="category-card" data-category="time">
+                    <div class="category-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Idő és Dátum</h3>
+                    <p>Munkaidő, időzónák</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="calculators" id="calculators">
+        <div class="container">
+            <h2 class="section-title">Népszerű Kalkulátorok</h2>
+            <div class="calculators-grid" id="calculators-container">
+                </div>
+        </div>
+    </section>
+
+    <div class="calculator-modal" id="calculator-modal">
+        <div class="calculator-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 id="modal-title">Kalkulátor</h2>
+            <form class="calculator-form" id="calculator-form">
+                </form>
+            <div class="calculator-result" id="calculator-result">
+                <h4>Eredmény:</h4>
+                <p id="result-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <section class="ads">
+        <div class="container">
+            <div class="ad-container">
+                <div class="ad-placeholder">
+                    HIRDETÉS - 728x90
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>100Calculator</h3>
+                    <p>Az Ön megbízható partnere mindenféle számítási feladatban. 100 kalkulátor egy helyen.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Gyors linkek</h3>
+                    <ul>
+                        <li><a href="#home">Főoldal</a></li>
+                        <li><a href="#categories">Kategóriák</a></li>
+                        <li><a href="#calculators">Kalkulátorok</a></li>
+                        <li><a href="#about">Rólunk</a></li>
+                        <li><a href="#contact">Kapcsolat</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Népszerű kalkulátorok</h3>
+                    <ul>
+                        <li><a href="#" class="calculator-link" data-id="0">BMI Kalkulátor</a></li>
+                        <li><a href="#" class="calculator-link" data-id="21">Hitelkalkulátor</a></li>
+                        <li><a href="#" class="calculator-link" data-id="25">Adó Kalkulátor</a></li>
+                        <li><a href="#" class="calculator-link" data-id="1">Kalória Kalkulátor</a></li>
+                        <li><a href="#" class="calculator-link" data-id="64">Valutaátváltó</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Kapcsolat</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@100calculator.com</li>
+                        <li><i class="fas fa-phone"></i> +36 1 234 5678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Budapest, Magyarország</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 100Calculator. Minden jog fenntartva.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Kalkulátor adatok - 100 kalkulátor
+        const calculators = [
+            // 0-20: Egészség és test
+            {
+                id: 0,
+                name: "BMI Kalkulátor",
+                category: "health",
+                description: "Számítsa ki testtömeg-indexét és értékelje testsúlyát.",
+                inputs: [
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 1, max: 300, step: 0.1 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 50, max: 250, step: 1 }
+                ],
+                calculate: function(data) {
+                    const heightInMeters = data.height / 100;
+                    const bmi = data.weight / (heightInMeters * heightInMeters);
+                    let category = "";
+                    
+                    if (bmi < 18.5) category = "Alulsúly";
+                    else if (bmi < 25) category = "Normál testsúly";
+                    else if (bmi < 30) category = "Túlsúly";
+                    else category = "Elhízás";
+                    
+                    return `BMI: ${bmi.toFixed(1)} - ${category}`;
+                }
+            },
+            {
+                id: 1,
+                name: "Kalória Kalkulátor",
+                category: "health",
+                description: "Határozza meg napi kalóriaszükségletét céljai alapján.",
+                inputs: [
+                    { id: "age", label: "Életkor", type: "number", min: 15, max: 100, step: 1 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] },
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 100, max: 220, step: 1 },
+                    { id: "activity", label: "Aktivitási szint", type: "select", options: ["Ülőmunka", "Enyhén aktív", "Mérsékelten aktív", "Nagyon aktív", "Extrém aktív"] }
+                ],
+                calculate: function(data) {
+                    let bmr = 0;
+                    if (data.gender === "Férfi") {
+                        bmr = 88.362 + (13.397 * data.weight) + (4.799 * data.height) - (5.677 * data.age);
+                    } else {
+                        bmr = 447.593 + (9.247 * data.weight) + (3.098 * data.height) - (4.330 * data.age);
+                    }
+                    
+                    let activityMultiplier = 1.2;
+                    switch(data.activity) {
+                        case "Enyhén aktív": activityMultiplier = 1.375; break;
+                        case "Mérsékelten aktív": activityMultiplier = 1.55; break;
+                        case "Nagyon aktív": activityMultiplier = 1.725; break;
+                        case "Extrém aktív": activityMultiplier = 1.9; break;
+                    }
+                    
+                    const dailyCalories = Math.round(bmr * activityMultiplier);
+                    
+                    return `Napi kalóriaszükséglet: ${dailyCalories} kcal<br>Alapanyagcsere (BMR): ${Math.round(bmr)} kcal`;
+                }
+            },
+            {
+                id: 2,
+                name: "Testzsír % Kalkulátor",
+                category: "health",
+                description: "Számítsa ki testzsír százalékát.",
+                inputs: [
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] },
+                    { id: "age", label: "Életkor", type: "number", min: 18, max: 80, step: 1 },
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 100, max: 220, step: 1 },
+                    { id: "waist", label: "Derékkörfogat (cm)", type: "number", min: 50, max: 200, step: 0.5 }
+                ],
+                calculate: function(data) {
+                    let bodyFatPercentage = 0;
+                    if (data.gender === "Férfi") {
+                        bodyFatPercentage = 64 - (20 * data.height / data.waist) + (0.1 * data.age);
+                    } else {
+                        bodyFatPercentage = 76 - (20 * data.height / data.waist) + (0.1 * data.age);
+                    }
+                    
+                    bodyFatPercentage = Math.max(5, Math.min(50, bodyFatPercentage));
+                    
+                    let category = "";
+                    if (data.gender === "Férfi") {
+                        if (bodyFatPercentage < 6) category = "Alacsony";
+                        else if (bodyFatPercentage < 14) category = "Egészséges";
+                        else if (bodyFatPercentage < 18) category = "Átlagos";
+                        else if (bodyFatPercentage < 25) category = "Magas";
+                        else category = "Nagyon magas";
+                    } else {
+                        if (bodyFatPercentage < 14) category = "Alacsony";
+                        else if (bodyFatPercentage < 21) category = "Egészséges";
+                        else if (bodyFatPercentage < 25) category = "Átlagos";
+                        else if (bodyFatPercentage < 32) category = "Magas";
+                        else category = "Nagyon magas";
+                    }
+                    
+                    return `Testzsír százalék: ${bodyFatPercentage.toFixed(1)}%<br>Kategória: ${category}`;
+                }
+            },
+            {
+                id: 3,
+                name: "Ideális testsúly kalkulátor",
+                category: "health",
+                description: "Számítsa ki ideális testsúlyát magassága alapján.",
+                inputs: [
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 100, max: 220, step: 1 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] },
+                    { id: "bodyFrame", label: "Testalkat", type: "select", options: ["Kicsi", "Közepes", "Nagy"] }
+                ],
+                calculate: function(data) {
+                    let idealWeight = 0;
+                    if (data.gender === "Férfi") {
+                        idealWeight = 50 + 0.9 * (data.height - 152);
+                    } else {
+                        idealWeight = 45.5 + 0.9 * (data.height - 152);
+                    }
+                    
+                    if (data.bodyFrame === "Kicsi") idealWeight *= 0.9;
+                    if (data.bodyFrame === "Nagy") idealWeight *= 1.1;
+                    
+                    return `Ideális testsúly: ${idealWeight.toFixed(1)} kg<br>Ajánlott testsúly tartomány: ${(idealWeight*0.9).toFixed(1)} - ${(idealWeight*1.1).toFixed(1)} kg`;
+                }
+            },
+            {
+                id: 4,
+                name: "Testtömegindex (BMI) értékelő",
+                category: "health",
+                description: "Értékelje BMI értékét kor és nem szerint.",
+                inputs: [
+                    { id: "bmi", label: "BMI érték", type: "number", min: 10, max: 50, step: 0.1 },
+                    { id: "age", label: "Életkor", type: "number", min: 18, max: 80, step: 1 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] }
+                ],
+                calculate: function(data) {
+                    let category = "";
+                    let recommendation = "";
+                    
+                    if (data.age < 25) {
+                        if (data.bmi < 18.5) { category = "Alulsúly"; recommendation = "Növelje testsúlyát egészséges étrenddel."; }
+                        else if (data.bmi < 25) { category = "Normál testsúly"; recommendation = "Tartsa meg jelenlegi testsúlyát."; }
+                        else if (data.bmi < 30) { category = "Túlsúly"; recommendation = "Fogyasszon egészségesebben és mozogjon többet."; }
+                        else { category = "Elhízás"; recommendation = "Forduljon orvoshoz vagy dietetikushoz."; }
+                    } else if (data.age < 65) {
+                        if (data.bmi < 19) { category = "Alulsúly"; recommendation = "Növelje testsúlyát egészséges étrenddel."; }
+                        else if (data.bmi < 26) { category = "Normál testsúly"; recommendation = "Tartsa meg jelenlegi testsúlyát."; }
+                        else if (data.bmi < 31) { category = "Túlsúly"; recommendation = "Fogyasszon egészségesebben és mozogjon többet."; }
+                        else { category = "Elhízás"; recommendation = "Forduljon orvoshoz vagy dietetikushoz."; }
+                    } else {
+                        if (data.bmi < 22) { category = "Alulsúly"; recommendation = "Növelje testsúlyát, de orvosi konzultáció mellett."; }
+                        else if (data.bmi < 28) { category = "Normál testsúly"; recommendation = "Tartsa meg jelenlegi testsúlyát."; }
+                        else if (data.bmi < 33) { category = "Túlsúly"; recommendation = "Enyhén csökkentse testsúlyát egészséges étrenddel."; }
+                        else { category = "Elhízás"; recommendation = "Forduljon orvoshoz vagy dietetikushoz."; }
+                    }
+                    
+                    return `BMI kategória: ${category}<br>Ajánlás: ${recommendation}`;
+                }
+            },
+            {
+                id: 5,
+                name: "Napi vízszükséglet kalkulátor",
+                category: "health",
+                description: "Számítsa ki napi vízszükségletét testsúly és aktivitás alapján.",
+                inputs: [
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 30, max: 150, step: 0.5 },
+                    { id: "activity", label: "Napi aktivitás", type: "select", options: ["Alacsony", "Közepes", "Magas"] },
+                    { id: "climate", label: "Éghajlat", type: "select", options: ["Mérsékelt", "Forró"] }
+                ],
+                calculate: function(data) {
+                    let baseWater = data.weight * 30;
+                    
+                    if (data.activity === "Közepes") baseWater *= 1.2;
+                    if (data.activity === "Magas") baseWater *= 1.5;
+                    
+                    if (data.climate === "Forró") baseWater *= 1.3;
+                    
+                    const liters = baseWater / 1000;
+                    
+                    return `Ajánlott napi folyadékbevitel: ${liters.toFixed(1)} liter<br>Ez körülbelül ${Math.round(liters / 0.25)} pohár (0,25 l) víznek felel meg.`;
+                }
+            },
+            {
+                id: 6,
+                name: "Alvásminőség kalkulátor",
+                category: "health",
+                description: "Értékelje alvásminőségét és kapjon javaslatokat.",
+                inputs: [
+                    { id: "sleepHours", label: "Átlagos alvásidő (óra)", type: "number", min: 3, max: 12, step: 0.5 },
+                    { id: "sleepQuality", label: "Alvásminőség (1-10)", type: "number", min: 1, max: 10, step: 1 },
+                    { id: "wakeUpRefreshed", label: "Felébresztés után frissnek érzi magát?", type: "select", options: ["Igen", "Nem"] }
+                ],
+                calculate: function(data) {
+                    let score = 0;
+                    let recommendation = "";
+                    
+                    if (data.sleepHours >= 7 && data.sleepHours <= 9) score += 4;
+                    else if (data.sleepHours >= 6 && data.sleepHours <= 10) score += 2;
+                    else score += 0;
+                    
+                    if (data.sleepQuality >= 8) score += 4;
+                    else if (data.sleepQuality >= 5) score += 2;
+                    else score += 0;
+                    
+                    if (data.wakeUpRefreshed === "Igen") score += 2;
+                    
+                    if (score >= 8) recommendation = "Kiváló alvásminőség! Tartsa meg jelenlegi szokásait.";
+                    else if (score >= 5) recommendation = "Átlagos alvásminőség. Próbáljon meg rendszeresebb alvási időpontokat tartani.";
+                    else recommendation = "Alvásminősége javításra szorul. Fontolja meg az alváshigiéniájának javítását.";
+                    
+                    return `Alvásminőségi pontszám: ${score}/10<br>Ajánlás: ${recommendation}`;
+                }
+            },
+            {
+                id: 7,
+                name: "Stresszszint kalkulátor",
+                category: "health",
+                description: "Értékelje stresszszintjét és kapjon csökkentési tippeket.",
+                inputs: [
+                    { id: "sleepProblems", label: "Alvászavarok", type: "select", options: ["Nem", "Néha", "Gyakran"] },
+                    { id: "irritability", label: "Ingerlékenység", type: "select", options: ["Nem", "Néha", "Gyakran"] },
+                    { id: "concentration", label: "Koncentrációs problémák", type: "select", options: ["Nem", "Néha", "Gyakran"] },
+                    { id: "physicalSymptoms", label: "Fizikai tünetek (fejfájás, gyomorgörcs)", type: "select", options: ["Nem", "Néha", "Gyakran"] }
+                ],
+                calculate: function(data) {
+                    let score = 0;
+                    
+                    const values = {"Nem": 0, "Néha": 1, "Gyakran": 2};
+                    score += values[data.sleepProblems];
+                    score += values[data.irritability];
+                    score += values[data.concentration];
+                    score += values[data.physicalSymptoms];
+                    
+                    let level = "";
+                    let tips = "";
+                    
+                    if (score <= 2) {
+                        level = "Alacsony stresszszint";
+                        tips = "Kiváló! Tartsa meg jelenlegi életmódját.";
+                    } else if (score <= 5) {
+                        level = "Mérsékelt stresszszint";
+                        tips = "Próbáljon meg relaxációs technikákat alkalmazni (mély légzés, meditáció).";
+                    } else {
+                        level = "Magas stresszszint";
+                        tips = "Fontolja meg a szakmai segítség felkeresését. Gyakoroljon testmozgást és keresse a társas támogatást.";
+                    }
+                    
+                    return `Stresszszint: ${level}<br>Pontszám: ${score}/8<br>Ajánlás: ${tips}`;
+                }
+            },
+            {
+                id: 8,
+                name: "Életkor alapú pulzus célzóna kalkulátor",
+                category: "health",
+                description: "Számítsa ki edzéshez optimális pulzuscélzónáját.",
+                inputs: [
+                    { id: "age", label: "Életkor", type: "number", min: 10, max: 80, step: 1 },
+                    { id: "restingHeartRate", label: "Nyugalmi pulzus (ü/perc)", type: "number", min: 40, max: 100, step: 1 },
+                    { id: "fitnessLevel", label: "Edzettségi szint", type: "select", options: ["Kezdő", "Közepes", "Haladó"] }
+                ],
+                calculate: function(data) {
+                    const maxHR = 220 - data.age;
+                    const hrReserve = maxHR - data.restingHeartRate;
+                    
+                    let lowIntensity = Math.round(data.restingHeartRate + (hrReserve * 0.5));
+                    let mediumIntensity = Math.round(data.restingHeartRate + (hrReserve * 0.7));
+                    let highIntensity = Math.round(data.restingHeartRate + (hrReserve * 0.85));
+                    
+                    let recommendation = "";
+                    if (data.fitnessLevel === "Kezdő") {
+                        recommendation = "Kezdje az alacsony intenzitású zónával (50-70%), és fokozatosan növelje.";
+                    } else if (data.fitnessLevel === "Közepes") {
+                        recommendation = "Tartsa a közepes intenzitású zónát (70-85%) a legtöbb edzéshez.";
+                    } else {
+                        recommendation = "Használja a magas intenzitású zónát (85% felett) intervall edzésekhez.";
+                    }
+                    
+                    return `Pulzus célzónák:<br>Alacsony intenzitás: ${lowIntensity}-${mediumIntensity-1} ü/perc<br>Közepes intenzitás: ${mediumIntensity}-${highIntensity-1} ü/perc<br>Magas intenzitás: ${highIntensity}+ ü/perc<br><br>${recommendation}`;
+                }
+            },
+            {
+                id: 9,
+                name: "Bázis anyagcsere (BMR) kalkulátor",
+                category: "health",
+                description: "Számítsa ki alap anyagcseréjét (BMR) testi funkcióinak fenntartásához.",
+                inputs: [
+                    { id: "age", label: "Életkor", type: "number", min: 15, max: 80, step: 1 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] },
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 40, max: 150, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 140, max: 210, step: 1 }
+                ],
+                calculate: function(data) {
+                    let bmr = 0;
+                    
+                    if (data.gender === "Férfi") {
+                        bmr = 10 * data.weight + 6.25 * data.height - 5 * data.age + 5;
+                    } else {
+                        bmr = 10 * data.weight + 6.25 * data.height - 5 * data.age - 161;
+                    }
+                    
+                    return `Alap anyagcsere (BMR): ${Math.round(bmr)} kcal/nap<br>Ez az energia, amire testi funkciói fenntartásához van szüksége teljes nyugalomban.`;
+                }
+            },
+            {
+                id: 10,
+                name: "Testtömeg arány kalkulátor",
+                category: "health",
+                description: "Számítsa ki testtömeg-arányát (WHR) és értékelje egészségügyi kockázatait.",
+                inputs: [
+                    { id: "waist", label: "Derékbőség (cm)", type: "number", min: 50, max: 150, step: 0.5 },
+                    { id: "hip", label: "Csípőbőség (cm)", type: "number", min: 60, max: 150, step: 0.5 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] }
+                ],
+                calculate: function(data) {
+                    const whr = data.waist / data.hip;
+                    
+                    let risk = "";
+                    if (data.gender === "Férfi") {
+                        if (whr < 0.9) risk = "Alacsony kockázat";
+                        else if (whr < 1.0) risk = "Közepes kockázat";
+                        else risk = "Magas kockázat";
+                    } else {
+                        if (whr < 0.8) risk = "Alacsony kockázat";
+                        else if (whr < 0.85) risk = "Közepes kockázat";
+                        else risk = "Magas kockázat";
+                    }
+                    
+                    return `Testtömeg-arány (WHR): ${whr.toFixed(2)}<br>Egészségügyi kockázat: ${risk}<br>Az ideális WHR férfiaknál < 0.9, nőknél < 0.8.`;
+                }
+            },
+            {
+                id: 11,
+                name: "Terhességi súlygyarapodás kalkulátor",
+                category: "health",
+                description: "Számítsa ki az ideális súlygyarapodást terhesség alatt.",
+                inputs: [
+                    { id: "prePregnancyWeight", label: "Terhesség előtti testsúly (kg)", type: "number", min: 40, max: 120, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 140, max: 190, step: 1 },
+                    { id: "week", label: "Terhesség hete", type: "number", min: 1, max: 42, step: 1 }
+                ],
+                calculate: function(data) {
+                    const bmi = data.prePregnancyWeight / Math.pow(data.height/100, 2);
+                    let recommendedGainMin = 0;
+                    let recommendedGainMax = 0;
+                    
+                    if (bmi < 18.5) { recommendedGainMin = 12.5; recommendedGainMax = 18; }
+                    else if (bmi < 25) { recommendedGainMin = 11.5; recommendedGainMax = 16; }
+                    else if (bmi < 30) { recommendedGainMin = 7; recommendedGainMax = 11.5; }
+                    else { recommendedGainMin = 5; recommendedGainMax = 9; }
+                    
+                    const currentGain = ((recommendedGainMin + recommendedGainMax) / 2 / 40) * data.week;
+                    
+                    return `Ajánlott összes súlygyarapodás: ${recommendedGainMin} - ${recommendedGainMax} kg<br>Jelenlegi ajánlott: ${currentGain.toFixed(1)} kg`;
+                }
+            },
+            {
+                id: 12,
+                name: "Vércukorszint értékelő",
+                category: "health",
+                description: "Értékelje vércukorszintjét különböző időpontokban.",
+                inputs: [
+                    { id: "bloodSugar", label: "Vércukorszint (mg/dL)", type: "number", min: 50, max: 400, step: 1 },
+                    { id: "measurementTime", label: "Mérés időpontja", type: "select", options: ["Éhgyomri", "Evés után 2 órával", "Véletlenszerű"] }
+                ],
+                calculate: function(data) {
+                    let result = "";
+                    
+                    if (data.measurementTime === "Éhgyomri") {
+                        if (data.bloodSugar < 100) result = "Normál";
+                        else if (data.bloodSugar < 126) result = "Megnövekedett vércukor (prediabetes)";
+                        else result = "Magas vércukor (diabetes gyanús)";
+                    } else if (data.measurementTime === "Evés után 2 órával") {
+                        if (data.bloodSugar < 140) result = "Normál";
+                        else if (data.bloodSugar < 200) result = "Megnövekedett vércukor (prediabetes)";
+                        else result = "Magas vércukor (diabetes gyanús)";
+                    } else {
+                        if (data.bloodSugar < 140) result = "Normál";
+                        else if (data.bloodSugar < 200) result = "Megnövekedett vércukor";
+                        else result = "Magas vércukor (diabetes gyanús)";
+                    }
+                    
+                    return `Vércukorszint értékelés: ${result}<br>Mért érték: ${data.bloodSugar} mg/dL`;
+                }
+            },
+            {
+                id: 13,
+                name: "Vérnyomás értékelő",
+                category: "health",
+                description: "Értékelje vérnyomásértékeit.",
+                inputs: [
+                    { id: "systolic", label: "Szisztolés (felső) érték", type: "number", min: 70, max: 200, step: 1 },
+                    { id: "diastolic", label: "Disztolés (alsó) érték", type: "number", min: 40, max: 130, step: 1 }
+                ],
+                calculate: function(data) {
+                    let category = "";
+                    
+                    if (data.systolic < 120 && data.diastolic < 80) {
+                        category = "Normál";
+                    } else if (data.systolic < 130 && data.diastolic < 85) {
+                        category = "Optimális";
+                    } else if (data.systolic < 140 && data.diastolic < 90) {
+                        category = "Normál magas";
+                    } else if (data.systolic < 160 && data.diastolic < 100) {
+                        category = "Enyhe magas vérnyomás";
+                    } else if (data.systolic < 180 && data.diastolic < 110) {
+                        category = "Mérsékelt magas vérnyomás";
+                    } else {
+                        category = "Súlyos magas vérnyomás";
+                    }
+                    
+                    return `Vérnyomás kategória: ${category}<br>Mért érték: ${data.systolic}/${data.diastolic} mmHg`;
+                }
+            },
+            {
+                id: 14,
+                name: "Koleszterin értékelő",
+                category: "health",
+                description: "Értékelje koleszterinszintjét.",
+                inputs: [
+                    { id: "totalCholesterol", label: "Összes koleszterin (mg/dL)", type: "number", min: 100, max: 400, step: 1 },
+                    { id: "hdl", label: "HDL (jó koleszterin) (mg/dL)", type: "number", min: 20, max: 100, step: 1 },
+                    { id: "ldl", label: "LDL (rossz koleszterin) (mg/dL)", type: "number", min: 50, max: 300, step: 1 }
+                ],
+                calculate: function(data) {
+                    let totalCategory = "";
+                    let hdlCategory = "";
+                    let ldlCategory = "";
+                    let ratio = data.totalCholesterol / data.hdl;
+                    let ratioCategory = "";
+                    
+                    // Összes koleszterin
+                    if (data.totalCholesterol < 200) totalCategory = "Kívánatos";
+                    else if (data.totalCholesterol < 240) totalCategory = "Borderline magas";
+                    else totalCategory = "Magas";
+                    
+                    // HDL
+                    if (data.hdl < 40) hdlCategory = "Alacsony";
+                    else if (data.hdl < 60) hdlCategory = "Normál";
+                    else hdlCategory = "Magas (jó)";
+                    
+                    // LDL
+                    if (data.ldl < 100) ldlCategory = "Optimális";
+                    else if (data.ldl < 130) ldlCategory = "Közel optimális";
+                    else if (data.ldl < 160) ldlCategory = "Borderline magas";
+                    else if (data.ldl < 190) ldlCategory = "Magas";
+                    else ldlCategory = "Nagyon magas";
+                    
+                    // Arány
+                    if (ratio < 3.5) ratioCategory = "Alacsony kockázat";
+                    else if (ratio < 5) ratioCategory = "Átlagos kockázat";
+                    else ratioCategory = "Magas kockázat";
+                    
+                    return `Összes koleszterin: ${data.totalCholesterol} mg/dL (${totalCategory})<br>HDL: ${data.hdl} mg/dL (${hdlCategory})<br>LDL: ${data.ldl} mg/dL (${ldlCategory})<br>Arány: ${ratio.toFixed(1)} (${ratioCategory})`;
+                }
+            },
+            {
+                id: 15,
+                name: "Testtömeg-aktivitás index",
+                category: "health",
+                description: "Számítsa ki testtömeg-aktivitás indexét.",
+                inputs: [
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 100, max: 220, step: 1 },
+                    { id: "activityLevel", label: "Aktivitási szint", type: "select", options: ["Alacsony", "Közepes", "Magas", "Nagyon magas"] }
+                ],
+                calculate: function(data) {
+                    const bmi = data.weight / Math.pow(data.height/100, 2);
+                    
+                    let activityFactor = 1;
+                    switch(data.activityLevel) {
+                        case "Alacsony": activityFactor = 0.8; break;
+                        case "Közepes": activityFactor = 1; break;
+                        case "Magas": activityFactor = 1.2; break;
+                        case "Nagyon magas": activityFactor = 1.4; break;
+                    }
+                    
+                    const massActivityIndex = bmi * activityFactor;
+                    
+                    let category = "";
+                    if (massActivityIndex < 18) category = "Alacsony";
+                    else if (massActivityIndex < 25) category = "Normál";
+                    else if (massActivityIndex < 30) category = "Megnövekedett";
+                    else category = "Magas";
+                    
+                    return `Testtömeg-aktivitás index: ${massActivityIndex.toFixed(1)}<br>Kategória: ${category}<br>BMI: ${bmi.toFixed(1)}<br>Aktivitási faktor: ${activityFactor}`;
+                }
+            },
+            {
+                id: 16,
+                name: "Testzsír eloszlás kalkulátor",
+                category: "health",
+                description: "Értékelje testzsír eloszlását.",
+                inputs: [
+                    { id: "waist", label: "Derékbőség (cm)", type: "number", min: 50, max: 150, step: 0.5 },
+                    { id: "hip", label: "Csípőbőség (cm)", type: "number", min: 60, max: 150, step: 0.5 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] }
+                ],
+                calculate: function(data) {
+                    const whr = data.waist / data.hip;
+                    
+                    let distribution = "";
+                    let risk = "";
+                    
+                    if (data.gender === "Férfi") {
+                        if (whr < 0.9) {
+                            distribution = "Gyümölcstípus (alsó test)";
+                            risk = "Alacsony egészségügyi kockázat";
+                        } else {
+                            distribution = "Almatípus (felső test)";
+                            risk = "Magasabb egészségügyi kockázat";
+                        }
+                    } else {
+                        if (whr < 0.8) {
+                            distribution = "Körtetípus (alsó test)";
+                            risk = "Alacsony egészségügyi kockázat";
+                        } else {
+                            distribution = "Almatípus (felső test)";
+                            risk = "Magasabb egészségügyi kockázat";
+                        }
+                    }
+                    
+                    return `Testzsír eloszlás: ${distribution}<br>Kockázat: ${risk}<br>Derék-csípő arány: ${whr.toFixed(2)}`;
+                }
+            },
+            {
+                id: 17,
+                name: "Izomtömeg kalkulátor",
+                category: "health",
+                description: "Becsülje meg izomtömegét.",
+                inputs: [
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 100, max: 220, step: 1 },
+                    { id: "gender", label: "Nem", type: "select", options: ["Férfi", "Nő"] },
+                    { id: "bodyFat", label: "Testzsír % (opcionális)", type: "number", min: 5, max: 50, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    let muscleMass = 0;
+                    
+                    if (data.bodyFat) {
+                        const fatMass = data.weight * (data.bodyFat / 100);
+                        const leanMass = data.weight - fatMass;
+                        muscleMass = leanMass * 0.85; // 85% of lean mass is muscle
+                    } else {
+                        // Estimation formula
+                        if (data.gender === "Férfi") {
+                            muscleMass = 0.407 * data.weight + 0.267 * data.height - 19.2;
+                        } else {
+                            muscleMass = 0.252 * data.weight + 0.473 * data.height - 48.3;
+                        }
+                    }
+                    
+                    const musclePercentage = (muscleMass / data.weight) * 100;
+                    
+                    let category = "";
+                    if (data.gender === "Férfi") {
+                        if (musclePercentage < 33) category = "Alacsony";
+                        else if (musclePercentage < 39) category = "Normál";
+                        else if (musclePercentage < 44) category = "Magas";
+                        else category = "Nagyon magas";
+                    } else {
+                        if (musclePercentage < 24) category = "Alacsony";
+                        else if (musclePercentage < 30) category = "Normál";
+                        else if (musclePercentage < 35) category = "Magas";
+                        else category = "Nagyon magas";
+                    }
+                    
+                    return `Izomtömeg: ${muscleMass.toFixed(1)} kg<br>Izomtömeg %: ${musclePercentage.toFixed(1)}%<br>Kategória: ${category}`;
+                }
+            },
+            {
+                id: 18,
+                name: "Testzsír cél kalkulátor",
+                category: "health",
+                description: "Számítsa ki testzsír célját testsúly alapján.",
+                inputs: [
+                    { id: "currentWeight", label: "Jelenlegi testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "currentBodyFat", label: "Jelenlegi testzsír %", type: "number", min: 5, max: 50, step: 0.1 },
+                    { id: "targetBodyFat", label: "Cél testzsír %", type: "number", min: 5, max: 50, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const currentFatMass = data.currentWeight * (data.currentBodyFat / 100);
+                    const currentLeanMass = data.currentWeight - currentFatMass;
+                    
+                    const targetWeight = currentLeanMass / (1 - (data.targetBodyFat / 100));
+                    const weightToLose = data.currentWeight - targetWeight;
+                    
+                    return `Cél testsúly: ${targetWeight.toFixed(1)} kg<br>Leadandó súly: ${weightToLose.toFixed(1)} kg<br>Jelenlegi zsírtömeg: ${currentFatMass.toFixed(1)} kg<br>Cél zsírtömeg: ${(targetWeight * (data.targetBodyFat / 100)).toFixed(1)} kg`;
+                }
+            },
+            {
+                id: 19,
+                name: "Testzsír vesztés kalkulátor",
+                category: "health",
+                description: "Számítsa ki, mennyi idő alatt érheti el testzsír célját.",
+                inputs: [
+                    { id: "currentWeight", label: "Jelenlegi testsúly (kg)", type: "number", min: 30, max: 200, step: 0.5 },
+                    { id: "currentBodyFat", label: "Jelenlegi testzsír %", type: "number", min: 5, max: 50, step: 0.1 },
+                    { id: "targetBodyFat", label: "Cél testzsír %", type: "number", min: 5, max: 50, step: 0.1 },
+                    { id: "weeklyWeightLoss", label: "Heti súlyvesztés (kg)", type: "number", min: 0.1, max: 1.5, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const currentFatMass = data.currentWeight * (data.currentBodyFat / 100);
+                    const currentLeanMass = data.currentWeight - currentFatMass;
+                    
+                    const targetWeight = currentLeanMass / (1 - (data.targetBodyFat / 100));
+                    const weightToLose = data.currentWeight - targetWeight;
+                    
+                    const weeksNeeded = weightToLose / data.weeklyWeightLoss;
+                    const monthsNeeded = weeksNeeded / 4.33;
+                    
+                    return `Szükséges idő: ${weeksNeeded.toFixed(1)} hét (${monthsNeeded.toFixed(1)} hónap)<br>Leadandó súly: ${weightToLose.toFixed(1)} kg<br>Heti cél: ${data.weeklyWeightLoss} kg`;
+                }
+            },
+            {
+                id: 20,
+                name: "Testzsír-fizikai aktivitás kalkulátor",
+                category: "health",
+                description: "Számítsa ki testzsír-fizikai aktivitás indexét.",
+                inputs: [
+                    { id: "bodyFat", label: "Testzsír %", type: "number", min: 5, max: 50, step: 0.1 },
+                    { id: "activityLevel", label: "Aktivitási szint", type: "select", options: ["Ülő életmód", "Enyhe aktivitás", "Mérsékelt aktivitás", "Intenzív aktivitás", "Extrém aktivitás"] }
+                ],
+                calculate: function(data) {
+                    let activityScore = 0;
+                    switch(data.activityLevel) {
+                        case "Ülő életmód": activityScore = 1; break;
+                        case "Enyhe aktivitás": activityScore = 2; break;
+                        case "Mérsékelt aktivitás": activityScore = 3; break;
+                        case "Intenzív aktivitás": activityScore = 4; break;
+                        case "Extrém aktivitás": activityScore = 5; break;
+                    }
+                    
+                    const fatActivityIndex = data.bodyFat / activityScore;
+                    
+                    let category = "";
+                    if (fatActivityIndex < 5) category = "Kiváló";
+                    else if (fatActivityIndex < 8) category = "Jó";
+                    else if (fatActivityIndex < 12) category = "Átlagos";
+                    else if (fatActivityIndex < 16) category = "Rossz";
+                    else category = "Nagyon rossz";
+                    
+                    return `Testzsír-aktivitás index: ${fatActivityIndex.toFixed(1)}<br>Kategória: ${category}<br>Testzsír: ${data.bodyFat}%<br>Aktivitási szint: ${data.activityLevel}`;
+                }
+            },
+            // 21-40: Pénzügyi kalkulátorok
+            {
+                id: 21,
+                name: "Hitelkalkulátor",
+                category: "finance",
+                description: "Számolja ki havi törlesztőrészletét és a teljes visszafizetendő összeget.",
+                inputs: [
+                    { id: "loanAmount", label: "Hitel összege (Ft)", type: "number", min: 10000, step: 1000 },
+                    { id: "interestRate", label: "Éves kamatláb (% - THM)", type: "number", min: 0.1, max: 50, step: 0.1 },
+                    { id: "loanTerm", label: "Futamidő (év)", type: "number", min: 1, max: 30, step: 1 }
+                ],
+                calculate: function(data) {
+                    const monthlyRate = data.interestRate / 100 / 12;
+                    const numberOfPayments = data.loanTerm * 12;
+                    if (monthlyRate === 0) { // Fix 0% kamatláb hiba
+                        const monthlyPayment = data.loanAmount / numberOfPayments;
+                        const totalPayment = data.loanAmount;
+                        const totalInterest = 0;
+                        return `Havi törlesztő: ${Math.round(monthlyPayment).toLocaleString('hu-HU')} Ft<br>Teljes visszafizetés: ${Math.round(totalPayment).toLocaleString('hu-HU')} Ft<br>Összes kamat: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                    }
+                    const monthlyPayment = data.loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                    const totalPayment = monthlyPayment * numberOfPayments;
+                    const totalInterest = totalPayment - data.loanAmount;
+                    
+                    return `Havi törlesztő: ${Math.round(monthlyPayment).toLocaleString('hu-HU')} Ft<br>Teljes visszafizetés: ${Math.round(totalPayment).toLocaleString('hu-HU')} Ft<br>Összes kamat: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 22,
+                name: "Megtakarítás cél kalkulátor",
+                category: "finance",
+                description: "Számítsa ki, mennyi idő alatt ér el egy pénzügyi célt havi befizetéssel.",
+                inputs: [
+                    { id: "goalAmount", label: "Célösszeg (Ft)", type: "number", min: 10000, step: 10000 },
+                    { id: "monthlyDeposit", label: "Havi befizetés (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "annualRate", label: "Éves hozam (%)", type: "number", min: 0.1, max: 20, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    let years = 0;
+                    let currentAmount = 0;
+                    const monthlyRate = data.annualRate / 100 / 12;
+                    
+                    if (data.annualRate === 0) {
+                        years = data.goalAmount / data.monthlyDeposit / 12;
+                    } else {
+                        // Egyszerűsített iteratív számítás, mert a pénzügyi formula bonyolult
+                        let months = 0;
+                        while(currentAmount < data.goalAmount && months < 3000) { // Max 250 év
+                            currentAmount = (currentAmount + data.monthlyDeposit) * (1 + monthlyRate);
+                            months++;
+                        }
+                        years = months / 12;
+                    }
+
+                    return `Szükséges idő: ${years.toFixed(1)} év (${Math.round(years * 12)} hónap)<br>Összes befizetés: ${Math.round(data.monthlyDeposit * years * 12).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 23,
+                name: "Jelzáloghitel kalkulátor",
+                category: "finance",
+                description: "Számolja ki jelzáloghitelének havi törlesztőrészletét.",
+                inputs: [
+                    { id: "loanAmount", label: "Hitel összege (Ft)", type: "number", min: 1000000, step: 100000 },
+                    { id: "interestRate", label: "Éves kamatláb (%)", type: "number", min: 0.1, max: 20, step: 0.1 },
+                    { id: "loanTerm", label: "Futamidő (év)", type: "number", min: 5, max: 30, step: 1 },
+                    { id: "propertyTax", label: "Éves vagyonadó (%)", type: "number", min: 0, max: 2, step: 0.01 }
+                ],
+                calculate: function(data) {
+                    const monthlyRate = data.interestRate / 100 / 12;
+                    const numberOfPayments = data.loanTerm * 12;
+                    const monthlyTax = data.loanAmount * (data.propertyTax / 100 / 12);
+                    
+                    const monthlyPayment = data.loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                    const totalPayment = monthlyPayment * numberOfPayments;
+                    const totalInterest = totalPayment - data.loanAmount;
+
+                    return `Havi törlesztő (kamat): ${Math.round(monthlyPayment).toLocaleString('hu-HU')} Ft<br>Havi adó/költség (becsült): ${Math.round(monthlyTax).toLocaleString('hu-HU')} Ft<br>Összes törlesztő (becsült): ${Math.round(monthlyPayment + monthlyTax).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 24,
+                name: "Nyugdíj megtakarítás kalkulátor",
+                category: "finance",
+                description: "Becsülje meg, mennyi pénze lesz nyugdíjba vonuláskor.",
+                inputs: [
+                    { id: "currentAge", label: "Jelenlegi életkor", type: "number", min: 18, max: 60, step: 1 },
+                    { id: "retirementAge", label: "Nyugdíjba vonulás kora", type: "number", min: 60, max: 75, step: 1 },
+                    { id: "monthlyDeposit", label: "Havi befizetés (Ft)", type: "number", min: 10000, step: 1000 },
+                    { id: "annualRate", label: "Várható éves hozam (%)", type: "number", min: 1, max: 15, step: 0.1 },
+                    { id: "currentSavings", label: "Jelenlegi megtakarítás (Ft)", type: "number", min: 0, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const yearsToRetirement = data.retirementAge - data.currentAge;
+                    const monthlyRate = data.annualRate / 100 / 12;
+                    const numberOfPayments = yearsToRetirement * 12;
+                    let futureValue = data.currentSavings;
+                    
+                    for (let i = 0; i < numberOfPayments; i++) {
+                        futureValue = (futureValue + data.monthlyDeposit) * (1 + monthlyRate);
+                    }
+                    
+                    const totalDeposit = data.currentSavings + (data.monthlyDeposit * numberOfPayments);
+                    const totalInterest = futureValue - totalDeposit;
+                    
+                    return `Várható nyugdíj összeg: ${Math.round(futureValue).toLocaleString('hu-HU')} Ft<br>Összes befizetés: ${Math.round(totalDeposit).toLocaleString('hu-HU')} Ft<br>Kamatból származó nyereség: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 25,
+                name: "Adó Kalkulátor (ÁFA)",
+                category: "finance",
+                description: "Számítsa ki a bruttó árat a nettó árból vagy fordítva.",
+                inputs: [
+                    { id: "netPrice", label: "Nettó ár (Ft)", type: "number", min: 0, step: 10 },
+                    { id: "vatRate", label: "ÁFA kulcs (%)", type: "number", min: 0, max: 27, step: 0.1 },
+                    { id: "calculationType", label: "Számítás típusa", type: "select", options: ["Nettó->Bruttó", "Bruttó->Nettó"] }
+                ],
+                calculate: function(data) {
+                    const vatMultiplier = 1 + (data.vatRate / 100);
+                    let result = {};
+                    
+                    if (data.calculationType === "Nettó->Bruttó") {
+                        const grossPrice = data.netPrice * vatMultiplier;
+                        const vatAmount = grossPrice - data.netPrice;
+                        result = {
+                            grossPrice: grossPrice,
+                            vatAmount: vatAmount
+                        };
+                    } else { // Bruttó->Nettó
+                        const netPrice = data.netPrice / vatMultiplier;
+                        const vatAmount = data.netPrice - netPrice;
+                        result = {
+                            grossPrice: data.netPrice,
+                            netPrice: netPrice,
+                            vatAmount: vatAmount
+                        };
+                    }
+                    
+                    if (data.calculationType === "Nettó->Bruttó") {
+                        return `ÁFA összege: ${result.vatAmount.toFixed(0).toLocaleString('hu-HU')} Ft<br>Bruttó ár: ${result.grossPrice.toFixed(0).toLocaleString('hu-HU')} Ft`;
+                    } else {
+                        return `ÁFA összege: ${result.vatAmount.toFixed(0).toLocaleString('hu-HU')} Ft<br>Nettó ár: ${result.netPrice.toFixed(0).toLocaleString('hu-HU')} Ft`;
+                    }
+                }
+            },
+            {
+                id: 26,
+                name: "Kamat kalkulátor",
+                category: "finance",
+                description: "Számolja ki a befizetett kamatot egyszerű vagy összetett kamatozással.",
+                inputs: [
+                    { id: "principal", label: "Alapösszeg (Ft)", type: "number", min: 10000, step: 1000 },
+                    { id: "annualRate", label: "Éves kamat (%)", type: "number", min: 0.1, max: 20, step: 0.1 },
+                    { id: "years", label: "Futamidő (év)", type: "number", min: 1, max: 50, step: 1 },
+                    { id: "compoundFrequency", label: "Kamat tőkésítési gyakorisága", type: "select", options: ["Évente", "Félévente", "Negyedévente", "Havonta", "Naponta"] }
+                ],
+                calculate: function(data) {
+                    const p = data.principal;
+                    const r = data.annualRate / 100;
+                    const t = data.years;
+                    let n = 1; 
+                    
+                    switch(data.compoundFrequency) {
+                        case "Félévente": n = 2; break;
+                        case "Negyedévente": n = 4; break;
+                        case "Havonta": n = 12; break;
+                        case "Naponta": n = 365; break;
+                    }
+                    
+                    const finalAmount = p * Math.pow(1 + (r / n), n * t);
+                    const totalInterest = finalAmount - p;
+                    
+                    return `Végső összeg: ${Math.round(finalAmount).toLocaleString('hu-HU')} Ft<br>Összes kamat: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 27,
+                name: "Infláció kalkulátor",
+                category: "finance",
+                description: "Számítsa ki, mennyit ér a pénzének vásárlóértéke a jövőben.",
+                inputs: [
+                    { id: "initialValue", label: "Jelenlegi pénzösszeg (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "inflationRate", label: "Várható éves infláció (%)", type: "number", min: 0.1, max: 20, step: 0.1 },
+                    { id: "years", label: "Évek száma", type: "number", min: 1, max: 50, step: 1 }
+                ],
+                calculate: function(data) {
+                    const futureValue = data.initialValue / Math.pow(1 + (data.inflationRate / 100), data.years);
+                    const lossOfValue = data.initialValue - futureValue;
+                    
+                    return `A pénz vásárlóértéke ${data.years} év múlva: ${Math.round(futureValue).toLocaleString('hu-HU')} Ft<br>Vásárlóérték csökkenés: ${Math.round(lossOfValue).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 28,
+                name: "Pénz jelenérték kalkulátor",
+                category: "finance",
+                description: "Számolja ki a jövőbeli pénzáramlások mai értékét.",
+                inputs: [
+                    { id: "futureValue", label: "Jövőbeli érték (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "discountRate", label: "Diszkontráta (%)", type: "number", min: 0.1, max: 20, step: 0.1 },
+                    { id: "years", label: "Évek száma", type: "number", min: 1, max: 50, step: 1 }
+                ],
+                calculate: function(data) {
+                    const presentValue = data.futureValue / Math.pow(1 + (data.discountRate / 100), data.years);
+                    
+                    return `Jelenérték (PV): ${Math.round(presentValue).toLocaleString('hu-HU')} Ft<br>Ez az az összeg, amit ma be kell fektetni, hogy elérje a célösszeget.`;
+                }
+            },
+            {
+                id: 29,
+                name: "Autóhitel kalkulátor",
+                category: "finance",
+                description: "Számolja ki autóhitelének havi törlesztőrészletét.",
+                inputs: [
+                    { id: "loanAmount", label: "Hitel összege (Ft)", type: "number", min: 100000, step: 10000 },
+                    { id: "interestRate", label: "Éves kamatláb (%)", type: "number", min: 1, max: 25, step: 0.1 },
+                    { id: "loanTerm", label: "Futamidő (hónap)", type: "number", min: 6, max: 84, step: 6 },
+                    { id: "downPayment", label: "Önerő (Ft)", type: "number", min: 0, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const principal = data.loanAmount - data.downPayment;
+                    const monthlyRate = data.interestRate / 100 / 12;
+                    const numberOfPayments = data.loanTerm;
+                    
+                    const monthlyPayment = principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                    const totalPayment = monthlyPayment * numberOfPayments;
+                    const totalInterest = totalPayment - principal;
+
+                    return `Havi törlesztő: ${Math.round(monthlyPayment).toLocaleString('hu-HU')} Ft<br>Teljes kamatköltség: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 30,
+                name: "Készpénz vs Hitel kalkulátor",
+                category: "finance",
+                description: "Hasonlítsa össze a készpénzes vásárlás és a hitel költségeit.",
+                inputs: [
+                    { id: "purchasePrice", label: "Vásárlási ár (Ft)", type: "number", min: 100000, step: 10000 },
+                    { id: "loanTerm", label: "Hitel futamideje (év)", type: "number", min: 1, max: 10, step: 1 },
+                    { id: "interestRate", label: "Hitel kamata (%)", type: "number", min: 1, max: 25, step: 0.1 },
+                    { id: "investmentRate", label: "Befektetési hozam, ha készpénz maradna (%)", type: "number", min: 0, max: 15, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const loan = calculators[21].calculate({loanAmount: data.purchasePrice, interestRate: data.interestRate, loanTerm: data.loanTerm});
+                    const totalPayment = parseFloat(loan.match(/Teljes visszafizetés: ([\d\s]+) Ft/)[1].replace(/\s/g, ''));
+
+                    const investmentValue = data.purchasePrice * Math.pow(1 + (data.investmentRate / 100), data.loanTerm);
+                    
+                    return `**Hitel költség (összes):** ${totalPayment.toLocaleString('hu-HU')} Ft<br>**Készpénz alternatív költsége (befektetési érték):** ${Math.round(investmentValue).toLocaleString('hu-HU')} Ft<br>Eltérés (Befektetési érték - Hitel költség): ${Math.round(investmentValue - totalPayment).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 31,
+                name: "Költségvetés követő",
+                category: "finance",
+                description: "Számolja ki, mennyi marad a bevételeiből a kiadások után.",
+                inputs: [
+                    { id: "monthlyIncome", label: "Havi nettó bevétel (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "fixedExpenses", label: "Fix havi kiadások (Ft) - lakbér, hitelek", type: "number", min: 0, step: 10000 },
+                    { id: "variableExpenses", label: "Változó havi kiadások (Ft) - élelmiszer, szabadidő", type: "number", min: 0, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const totalExpenses = data.fixedExpenses + data.variableExpenses;
+                    const remaining = data.monthlyIncome - totalExpenses;
+                    
+                    let status = remaining >= 0 ? "Pozitív egyenleg" : "Negatív egyenleg (Többet költ, mint amennyit keres)";
+                    
+                    return `Összes kiadás: ${totalExpenses.toLocaleString('hu-HU')} Ft<br>Megmaradó összeg: ${remaining.toLocaleString('hu-HU')} Ft<br>Státusz: ${status}`;
+                }
+            },
+            {
+                id: 32,
+                name: "Reálhozam kalkulátor",
+                category: "finance",
+                description: "Számítsa ki befektetésének valódi hozamát az infláció figyelembevételével.",
+                inputs: [
+                    { id: "nominalReturn", label: "Névleges éves hozam (%)", type: "number", min: 0, max: 30, step: 0.1 },
+                    { id: "inflationRate", label: "Éves infláció (%)", type: "number", min: 0, max: 20, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const realReturn = ((1 + data.nominalReturn / 100) / (1 + data.inflationRate / 100) - 1) * 100;
+                    
+                    return `Reálhozam: ${realReturn.toFixed(2)} %<br>${realReturn < 0 ? 'Vásárlóérték csökkenés történt (negatív reálhozam).' : 'Vásárlóértéke növekedett (pozitív reálhozam).'}`;
+                }
+            },
+            {
+                id: 33,
+                name: "Kamatadó kalkulátor",
+                category: "finance",
+                description: "Számítsa ki, mennyi kamatadót kell fizetnie a nyereség után.",
+                inputs: [
+                    { id: "profit", label: "Kamatnyereség (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "taxRate", label: "Kamatadó kulcs (%)", type: "number", min: 0, max: 25, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const taxAmount = data.profit * (data.taxRate / 100);
+                    const netProfit = data.profit - taxAmount;
+                    
+                    return `Fizetendő adó: ${Math.round(taxAmount).toLocaleString('hu-HU')} Ft<br>Nettó nyereség: ${Math.round(netProfit).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 34,
+                name: "Összetett kamat - befektetés",
+                category: "finance",
+                description: "Számolja ki a jövőbeli értéket rendszeres befizetésekkel.",
+                inputs: [
+                    { id: "initialInvestment", label: "Kezdő befektetés (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "monthlyContribution", label: "Havi befizetés (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "annualRate", label: "Éves hozam (%)", type: "number", min: 0.1, max: 20, step: 0.1 },
+                    { id: "years", label: "Évek száma", type: "number", min: 1, max: 50, step: 1 }
+                ],
+                calculate: function(data) {
+                    const p = data.initialInvestment;
+                    const r = data.annualRate / 100 / 12;
+                    const n = data.years * 12;
+                    const m = data.monthlyContribution;
+                    
+                    let fv = p;
+                    for(let i = 0; i < n; i++) {
+                        fv = (fv + m) * (1 + r);
+                    }
+                    
+                    const totalDeposit = p + (m * n);
+                    const totalInterest = fv - totalDeposit;
+
+                    return `Végső vagyon: ${Math.round(fv).toLocaleString('hu-HU')} Ft<br>Összes befizetés: ${Math.round(totalDeposit).toLocaleString('hu-HU')} Ft<br>Kamatból származó nyereség: ${Math.round(totalInterest).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 35,
+                name: "Likviditási arány",
+                category: "finance",
+                description: "Számolja ki a vállalat azonnali likviditási arányát.",
+                inputs: [
+                    { id: "currentAssets", label: "Forgóeszközök (Ft)", type: "number", min: 1, step: 1000 },
+                    { id: "currentLiabilities", label: "Rövid lejáratú kötelezettségek (Ft)", type: "number", min: 1, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const currentRatio = data.currentAssets / data.currentLiabilities;
+                    let evaluation = "";
+                    
+                    if (currentRatio >= 2) evaluation = "Kiváló (Magas likviditás)";
+                    else if (currentRatio >= 1) evaluation = "Jó (Egészséges likviditás)";
+                    else evaluation = "Rossz (Likviditási problémák gyanúja)";
+
+                    return `Jelenlegi likviditási arány: ${currentRatio.toFixed(2)}:1<br>Értékelés: ${evaluation}`;
+                }
+            },
+            {
+                id: 36,
+                name: "Kamatfedezeti arány",
+                category: "finance",
+                description: "Számolja ki a vállalat kamatfedezeti arányát (Times Interest Earned).",
+                inputs: [
+                    { id: "ebit", label: "Adózás és kamat előtti eredmény (EBIT) (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "interestExpense", label: "Kamatráfordítás (Ft)", type: "number", min: 1, step: 100 }
+                ],
+                calculate: function(data) {
+                    const tieRatio = data.ebit / data.interestExpense;
+                    let evaluation = "";
+
+                    if (tieRatio >= 3) evaluation = "Kiváló (Könnyen fedezi a kamatkiadásokat)";
+                    else if (tieRatio >= 1.5) evaluation = "Jó (Egészséges fedezet)";
+                    else evaluation = "Rossz (Kockázat, hogy nem tudja fizetni a kamatokat)";
+                    
+                    return `Kamatfedezeti arány (TIE): ${tieRatio.toFixed(2)}x<br>Értékelés: ${evaluation}`;
+                }
+            },
+            {
+                id: 37,
+                name: "Hozam a vagyonra (ROA)",
+                category: "finance",
+                description: "Számolja ki a befektetett vagyon megtérülését (ROA).",
+                inputs: [
+                    { id: "netIncome", label: "Nettó jövedelem (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "totalAssets", label: "Összes eszköz (Ft)", type: "number", min: 1, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const roa = (data.netIncome / data.totalAssets) * 100;
+                    
+                    return `ROA (Return on Assets): ${roa.toFixed(2)} %<br>Minél magasabb, annál hatékonyabb a vállalat az eszközök felhasználásában.`;
+                }
+            },
+            {
+                id: 38,
+                name: "Hozam a tőkére (ROE)",
+                category: "finance",
+                description: "Számolja ki a saját tőke megtérülését (ROE).",
+                inputs: [
+                    { id: "netIncome", label: "Nettó jövedelem (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "shareholderEquity", label: "Saját tőke (Ft)", type: "number", min: 1, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const roe = (data.netIncome / data.shareholderEquity) * 100;
+
+                    return `ROE (Return on Equity): ${roe.toFixed(2)} %<br>A részvényesek befektetésének jövedelmezőségét mutatja.`;
+                }
+            },
+            {
+                id: 39,
+                name: "Maximum megengedhető lakbér",
+                category: "finance",
+                description: "Kiszámolja, hogy havi bevételének és kiadásainak hány százalékát fordíthatja lakbérre.",
+                inputs: [
+                    { id: "monthlyIncome", label: "Havi nettó bevétel (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "otherExpenses", label: "Egyéb havi kiadások (Ft)", type: "number", min: 0, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const maxRent30 = data.monthlyIncome * 0.3;
+                    const maxRent40 = data.monthlyIncome * 0.4;
+                    const availableAfterExpenses = data.monthlyIncome - data.otherExpenses;
+                    
+                    return `Ajánlott lakbér tartomány:<br>- Konzervatív: ${Math.round(maxRent30).toLocaleString('hu-HU')} Ft (30%)<br>- Megengedhető: ${Math.round(maxRent40).toLocaleString('hu-HU')} Ft (40%)<br>- Elérhető maximum: ${Math.round(availableAfterExpenses).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 40,
+                name: "Ingatlanérték növekedés kalkulátor",
+                category: "finance",
+                description: "Becsülje meg ingatlanának értékét a jövőben.",
+                inputs: [
+                    { id: "currentValue", label: "Jelenlegi érték (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "annualAppreciation", label: "Éves értéknövekedés (%)", type: "number", min: 0, max: 20, step: 0.1 },
+                    { id: "years", label: "Évek száma", type: "number", min: 1, max: 30, step: 1 }
+                ],
+                calculate: function(data) {
+                    const futureValue = data.currentValue * Math.pow(1 + (data.annualAppreciation / 100), data.years);
+                    
+                    return `Becsült jövőbeli érték: ${Math.round(futureValue).toLocaleString('hu-HU')} Ft<br>Teljes növekedés: ${Math.round(futureValue - data.currentValue).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            // 41-60: Autó és ingatlan kalkulátorok
+            {
+                id: 41,
+                name: "Autó értékcsökkenés kalkulátor",
+                category: "auto",
+                description: "Számítsa ki autója értékvesztését az évek során.",
+                inputs: [
+                    { id: "purchasePrice", label: "Vételár (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "age", label: "Jelenlegi életkor (év)", type: "number", min: 0, max: 30, step: 1 },
+                    { id: "brand", label: "Márka", type: "select", options: ["Prémium", "Középkategória", "Alacsony kategória"] }
+                ],
+                calculate: function(data) {
+                    let depreciationRate = 0.15;
+                    
+                    if (data.brand === "Prémium") depreciationRate = 0.12;
+                    if (data.brand === "Alacsony kategória") depreciationRate = 0.18;
+                    
+                    const currentValue = data.purchasePrice * Math.pow(1 - depreciationRate, data.age);
+                    const totalDepreciation = data.purchasePrice - currentValue;
+                    const depreciationPercentage = (totalDepreciation / data.purchasePrice) * 100;
+                    
+                    return `Jelenlegi érték: ${Math.round(currentValue).toLocaleString('hu-HU')} Ft<br>Összes értékcsökkenés: ${Math.round(totalDepreciation).toLocaleString('hu-HU')} Ft (${depreciationPercentage.toFixed(1)}%)`;
+                }
+            },
+            {
+                id: 42,
+                name: "Üzemanyag fogyasztás kalkulátor",
+                category: "auto",
+                description: "Számolja ki autója átlagos fogyasztását 100 km-en.",
+                inputs: [
+                    { id: "distance", label: "Megtett távolság (km)", type: "number", min: 1, step: 1 },
+                    { id: "fuelUsed", label: "Felhasznált üzemanyag (liter)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const consumption = (data.fuelUsed / data.distance) * 100;
+                    
+                    return `Fogyasztás: ${consumption.toFixed(2)} liter/100 km<br>Autója környezetbarátabb a(z) ${consumption.toFixed(2) < 6 ? 'átlagnál' : 'átlagosnál kevésbé'}.`;
+                }
+            },
+            {
+                id: 43,
+                name: "Útiköltség kalkulátor",
+                category: "auto",
+                description: "Számolja ki egy utazás várható üzemanyagköltségét.",
+                inputs: [
+                    { id: "distance", label: "Megtett távolság (km)", type: "number", min: 1, step: 1 },
+                    { id: "consumption", label: "Átlagfogyasztás (liter/100 km)", type: "number", min: 1, max: 20, step: 0.1 },
+                    { id: "fuelPrice", label: "Üzemanyagár (Ft/liter)", type: "number", min: 1, step: 1 }
+                ],
+                calculate: function(data) {
+                    const totalFuelNeeded = (data.distance / 100) * data.consumption;
+                    const totalCost = totalFuelNeeded * data.fuelPrice;
+                    
+                    return `Szükséges üzemanyag: ${totalFuelNeeded.toFixed(2)} liter<br>Összes költség: ${Math.round(totalCost).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 44,
+                name: "Gumiabroncs méret átváltó",
+                category: "auto",
+                description: "Átváltja a metrikus gumiabroncs méretet (pl. 205/55 R16) a kerék átmérőjére.",
+                inputs: [
+                    { id: "width", label: "Szélesség (mm)", type: "number", min: 100, step: 5 },
+                    { id: "aspectRatio", label: "Oldalfal arány (%)", type: "number", min: 10, max: 90, step: 5 },
+                    { id: "wheelDiameter", label: "Kerék átmérő (coll)", type: "number", min: 10, max: 30, step: 1 }
+                ],
+                calculate: function(data) {
+                    const sideWallHeight = data.width * (data.aspectRatio / 100);
+                    const totalDiameterInInches = (sideWallHeight * 2 / 25.4) + data.wheelDiameter;
+                    const totalDiameterInMM = totalDiameterInInches * 25.4;
+                    
+                    return `Oldalfal magassága: ${sideWallHeight.toFixed(1)} mm<br>Teljes kerék átmérő: ${totalDiameterInMM.toFixed(1)} mm (${totalDiameterInInches.toFixed(2)} inch)`;
+                }
+            },
+            {
+                id: 45,
+                name: "Havi autó fenntartási költség",
+                category: "auto",
+                description: "Becsülje meg autója havi fenntartási költségeit (üzemanyag nélkül).",
+                inputs: [
+                    { id: "insurance", label: "Éves biztosítás (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "maintenance", label: "Éves karbantartás/javítás (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "tax", label: "Éves adó/díjak (Ft)", type: "number", min: 0, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const annualCost = data.insurance + data.maintenance + data.tax;
+                    const monthlyCost = annualCost / 12;
+                    
+                    return `Éves költség: ${annualCost.toLocaleString('hu-HU')} Ft<br>Havi fenntartási költség (átlag): ${Math.round(monthlyCost).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 46,
+                name: "Rezidenciális ingatlan adó kalkulátor",
+                category: "real-estate",
+                description: "Számítsa ki egy ingatlan várható éves adóját.",
+                inputs: [
+                    { id: "propertyValue", label: "Ingatlan piaci értéke (Ft)", type: "number", min: 1000000, step: 1000000 },
+                    { id: "assessmentRatio", label: "Adóalap arány (%)", type: "number", min: 1, max: 100, step: 1 },
+                    { id: "taxRate", label: "Adókulcs (ezrelék, pl. 15)", type: "number", min: 1, max: 50, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const assessedValue = data.propertyValue * (data.assessmentRatio / 100);
+                    const annualTax = assessedValue * (data.taxRate / 1000);
+                    const monthlyTax = annualTax / 12;
+
+                    return `Adóalap: ${assessedValue.toLocaleString('hu-HU')} Ft<br>Éves ingatlanadó: ${Math.round(annualTax).toLocaleString('hu-HU')} Ft<br>Havi adó: ${Math.round(monthlyTax).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 47,
+                name: "Ingatlan ROI (Befektetés megtérülése)",
+                category: "real-estate",
+                description: "Számítsa ki egy befektetési ingatlan megtérülését (ROI).",
+                inputs: [
+                    { id: "initialInvestment", label: "Teljes kezdeti befektetés (Ft)", type: "number", min: 100000, step: 10000 },
+                    { id: "annualIncome", label: "Éves nettó bérleti bevétel (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "saleProfit", label: "Eladásból származó nyereség (Ft) - ha eladja", type: "number", min: 0, step: 10000 },
+                    { id: "holdingTime", label: "Birtoklás időtartama (év)", type: "number", min: 1, max: 30, step: 1 }
+                ],
+                calculate: function(data) {
+                    const totalProfit = (data.annualIncome * data.holdingTime) + data.saleProfit;
+                    const roi = (totalProfit / data.initialInvestment) * 100;
+                    const annualizedRoi = roi / data.holdingTime;
+                    
+                    return `Teljes ROI: ${roi.toFixed(2)} %<br>Évesített ROI (becsült): ${annualizedRoi.toFixed(2)} %<br>Összes profit: ${totalProfit.toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 48,
+                name: "Tervezési/Műszaki élettartam",
+                category: "real-estate",
+                description: "Becsülje meg egy ingatlan/rendszer élettartamát (Lineáris módszer).",
+                inputs: [
+                    { id: "initialCost", label: "Kezdeti költség (Ft)", type: "number", min: 10000, step: 1000 },
+                    { id: "usefulLife", label: "Becsült hasznos élettartam (év)", type: "number", min: 1, max: 50, step: 1 },
+                    { id: "currentAge", label: "Jelenlegi életkor (év)", type: "number", min: 0, max: 50, step: 1 }
+                ],
+                calculate: function(data) {
+                    const annualDepreciation = data.initialCost / data.usefulLife;
+                    const remainingLife = data.usefulLife - data.currentAge;
+                    const currentBookValue = data.initialCost - (annualDepreciation * data.currentAge);
+                    
+                    return `Éves értékcsökkenés: ${Math.round(annualDepreciation).toLocaleString('hu-HU')} Ft<br>Becsült hátralévő élettartam: ${remainingLife} év<br>Jelenlegi könyv szerinti érték: ${Math.round(currentBookValue).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 49,
+                name: "Ingatlan cash flow",
+                category: "real-estate",
+                description: "Számítsa ki egy bérbe adandó ingatlan havi nettó pénzáramlását.",
+                inputs: [
+                    { id: "monthlyRent", label: "Havi bérleti díj (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "monthlyMortgage", label: "Havi törlesztő (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "monthlyExpenses", label: "Havi költségek (rezsi, adó, karbantartási alap) (Ft)", type: "number", min: 0, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const netCashFlow = data.monthlyRent - data.monthlyMortgage - data.monthlyExpenses;
+                    const annualCashFlow = netCashFlow * 12;
+
+                    let status = netCashFlow > 0 ? "Pozitív cash flow" : netCashFlow < 0 ? "Negatív cash flow" : "Nulla cash flow";
+                    
+                    return `Havi nettó cash flow: ${netCashFlow.toLocaleString('hu-HU')} Ft<br>Éves nettó cash flow: ${annualCashFlow.toLocaleString('hu-HU')} Ft<br>Státusz: ${status}`;
+                }
+            },
+            {
+                id: 50,
+                name: "Ingatlan Cap Rate",
+                category: "real-estate",
+                description: "Számítsa ki egy ingatlan tőkésítési rátáját (Cap Rate).",
+                inputs: [
+                    { id: "noi", label: "Éves nettó működési bevétel (NOI) (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "propertyValue", label: "Ingatlan piaci értéke (Ft)", type: "number", min: 10000, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const capRate = (data.noi / data.propertyValue) * 100;
+                    
+                    return `Tőkésítési ráta (Cap Rate): ${capRate.toFixed(2)} %<br>Egy magas Cap Rate nagyobb megtérülést jelez a vásárló számára, de nagyobb kockázatot is jelenthet.`;
+                }
+            },
+            {
+                id: 51,
+                name: "Adózás utáni megtérülés (ATIR)",
+                category: "real-estate",
+                description: "Számítsa ki az adózás utáni belső megtérülési rátát (ATIR).",
+                inputs: [
+                    { id: "initialEquity", label: "Kezdeti saját tőke befektetés (Ft)", type: "number", min: 10000, step: 1000 },
+                    { id: "cashFlow1", label: "1. év adózás utáni cash flow (Ft)", type: "number", step: 1000 },
+                    { id: "cashFlow2", label: "2. év adózás utáni cash flow (Ft)", type: "number", step: 1000 },
+                    { id: "saleCF", label: "Eladási adózás utáni cash flow (Ft)", type: "number", step: 1000 }
+                ],
+                calculate: function(data) {
+                    // Egyszerűsített számítás (csak 2 év + eladás)
+                    const npv = -data.initialEquity + data.cashFlow1 + data.cashFlow2 + data.saleCF;
+                    let irr = 0; // Ez csak egy nagyon egyszerű becslés
+                    
+                    if (npv > 0) {
+                        irr = (npv / data.initialEquity) * 100;
+                    } else {
+                        irr = -10; // Negatív becslés, ha a npv < 0
+                    }
+                    
+                    return `Nettó Jelenérték (egyszerű): ${npv.toLocaleString('hu-HU')} Ft<br>Becsült belső megtérülési ráta (ATIR): ${irr.toFixed(2)} %<br>Pontosabb ATIR számításhoz komplexebb pénzügyi modell szükséges.`;
+                }
+            },
+            {
+                id: 52,
+                name: "Újrahasznált anyagok aránya",
+                category: "engineering",
+                description: "Számítsa ki az újrahasznált anyagok arányát egy termékben (zöld mérnöki).",
+                inputs: [
+                    { id: "recycledMass", label: "Újrahasznált anyag tömege (kg)", type: "number", min: 0, step: 0.1 },
+                    { id: "totalMass", label: "Teljes termék tömege (kg)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const ratio = (data.recycledMass / data.totalMass) * 100;
+                    
+                    return `Újrahasznált anyagok aránya: ${ratio.toFixed(2)} %<br>${ratio >= 50 ? 'Fenntartható termék' : 'Alacsony újrahasznosítási arány'}`;
+                }
+            },
+            {
+                id: 53,
+                name: "Forgalom kalkulátor (RPM/Sebesség)",
+                category: "auto",
+                description: "Számítsa ki a sebességet a motor fordulatszáma (RPM) és a kerék mérete alapján.",
+                inputs: [
+                    { id: "rpm", label: "Motor fordulatszáma (RPM)", type: "number", min: 100, step: 100 },
+                    { id: "gearRatio", label: "Váltó áttétel", type: "number", min: 0.1, step: 0.01 },
+                    { id: "finalDriveRatio", label: "Differenciálmű áttétel", type: "number", min: 1, step: 0.1 },
+                    { id: "tireDiameter", label: "Kerék átmérő (coll)", type: "number", min: 10, max: 35, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    // Sebesség (MPH) = (RPM * Tire Diameter) / (Gear Ratio * Final Drive Ratio * 336)
+                    // Átváltás km/h-ra: * 1.609
+                    const velocityMPH = (data.rpm * data.tireDiameter) / (data.gearRatio * data.finalDriveRatio * 336);
+                    const velocityKMH = velocityMPH * 1.60934;
+                    
+                    return `Becsült sebesség: ${velocityKMH.toFixed(0)} km/h<br>Kerékfordulat (W-RPM): ${Math.round(data.rpm / (data.gearRatio * data.finalDriveRatio))} fordulat/perc`;
+                }
+            },
+            {
+                id: 54,
+                name: "Ingatlan bruttó bérleti szorzó (GRM)",
+                category: "real-estate",
+                description: "Értékelje az ingatlan értékét éves bruttó bérleti bevétel alapján.",
+                inputs: [
+                    { id: "purchasePrice", label: "Vásárlási ár (Ft)", type: "number", min: 1000000, step: 100000 },
+                    { id: "annualGrossRent", label: "Éves bruttó bérleti bevétel (Ft)", type: "number", min: 10000, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const grm = data.purchasePrice / data.annualGrossRent;
+                    
+                    return `Bruttó bérleti szorzó (GRM): ${grm.toFixed(1)}x<br>Egy alacsonyabb GRM általában jobb befektetést jelez.`;
+                }
+            },
+            {
+                id: 55,
+                name: "Ingatlan kölcsön-érték arány (LTV)",
+                category: "real-estate",
+                description: "Számítsa ki hitel-érték arányát (Loan-to-Value Ratio).",
+                inputs: [
+                    { id: "loanAmount", label: "Hitel összege (Ft)", type: "number", min: 100000, step: 10000 },
+                    { id: "appraisedValue", label: "Ingatlan becsült értéke (Ft)", type: "number", min: 100000, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const ltv = (data.loanAmount / data.appraisedValue) * 100;
+                    
+                    let status = "";
+                    if (ltv <= 80) status = "Jó (Általában nem szükséges jelzálog biztosítás)";
+                    else if (ltv <= 90) status = "Átlagos (Lehetséges kiegészítő biztosítás)";
+                    else status = "Magas (Nagyobb kockázat a hitelintézet számára)";
+
+                    return `Kölcsön-érték arány (LTV): ${ltv.toFixed(1)} %<br>Státusz: ${status}`;
+                }
+            },
+            {
+                id: 56,
+                name: "Ingatlan adósságfedezeti ráta (DCR)",
+                category: "real-estate",
+                description: "Számítsa ki az ingatlan adósságfedezeti rátáját.",
+                inputs: [
+                    { id: "noi", label: "Éves nettó működési bevétel (NOI) (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "debtService", label: "Éves adósságszolgálat (törlesztő + kamat) (Ft)", type: "number", min: 1000, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const dcr = data.noi / data.debtService;
+                    
+                    let status = "";
+                    if (dcr >= 1.25) status = "Kiváló (A bevétel jóval meghaladja az adósságot)";
+                    else if (dcr >= 1) status = "Elfogadható (Elegendő a fedezet)";
+                    else status = "Rossz (Pénzügyi kockázat)";
+
+                    return `Adósságfedezeti ráta (DCR): ${dcr.toFixed(2)}x<br>Státusz: ${status}<br>A bankok általában 1.25x feletti értéket várnak el.`;
+                }
+            },
+            {
+                id: 57,
+                name: "Ingatlan tőkeáttétel (Leverage)",
+                category: "real-estate",
+                description: "Számítsa ki egy ingatlan tranzakció tőkeáttételét.",
+                inputs: [
+                    { id: "totalAssets", label: "Ingatlan teljes értéke (Ft)", type: "number", min: 1000000, step: 100000 },
+                    { id: "totalEquity", label: "Saját tőke befektetés (Ft)", type: "number", min: 100000, step: 10000 }
+                ],
+                calculate: function(data) {
+                    const leverage = data.totalAssets / data.totalEquity;
+                    const debtRatio = (data.totalAssets - data.totalEquity) / data.totalAssets;
+                    
+                    return `Tőkeáttétel: ${leverage.toFixed(2)}x<br>Adósságarány: ${(debtRatio * 100).toFixed(1)} %<br>Minél magasabb a tőkeáttétel, annál magasabb a potenciális hozam, de a kockázat is.`;
+                }
+            },
+            {
+                id: 58,
+                name: "Autó üzemanyag-hatékonyság átváltó",
+                category: "auto",
+                description: "Átváltja az üzemanyag-hatékonyságot L/100km és MPG (Miles Per Gallon) között.",
+                inputs: [
+                    { id: "value", label: "Érték", type: "number", min: 0.1, step: 0.1 },
+                    { id: "unit", label: "Mértékegység", type: "select", options: ["L/100km", "MPG"] }
+                ],
+                calculate: function(data) {
+                    // MPG = 235.21 / (L/100km)
+                    // L/100km = 235.21 / MPG
+                    
+                    let result = "";
+                    if (data.unit === "L/100km") {
+                        const mpg = 235.21 / data.value;
+                        result = `${data.value} L/100km = ${mpg.toFixed(2)} MPG`;
+                    } else {
+                        const lphk = 235.21 / data.value;
+                        result = `${data.value} MPG = ${lphk.toFixed(2)} L/100km`;
+                    }
+                    
+                    return result;
+                }
+            },
+            {
+                id: 59,
+                name: "Ingatlan hitel futamidő kalkulátor",
+                category: "real-estate",
+                description: "Számítsa ki, mennyi idő alatt fizeti vissza hitelét.",
+                inputs: [
+                    { id: "loanAmount", label: "Hitel összege (Ft)", type: "number", min: 100000, step: 10000 },
+                    { id: "monthlyPayment", label: "Havi törlesztő (Ft)", type: "number", min: 1000, step: 1000 },
+                    { id: "interestRate", label: "Éves kamat (%)", type: "number", min: 0.1, max: 20, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const L = data.loanAmount;
+                    const R = data.interestRate / 100 / 12;
+                    const M = data.monthlyPayment;
+                    
+                    if (M <= L * R) {
+                        return "Hiba: A havi törlesztő túl alacsony, még a kamatokat sem fedezi.";
+                    }
+
+                    const N = -Math.log(1 - (L * R) / M) / Math.log(1 + R);
+                    const years = N / 12;
+                    
+                    return `Szükséges futamidő: ${Math.round(N)} hónap (${years.toFixed(1)} év)<br>Teljes visszafizetés: ${Math.round(M * N).toLocaleString('hu-HU')} Ft`;
+                }
+            },
+            {
+                id: 60,
+                name: "Lakásbérlés vs vásárlás kalkulátor",
+                category: "real-estate",
+                description: "Hasonlítsa össze a lakásbérlést és vásárlást 5 évre vonatkozóan (egyszerűsített).",
+                inputs: [
+                    { id: "rent", label: "Havi bérleti díj (Ft)", type: "number", min: 0, step: 10000 },
+                    { id: "purchasePrice", label: "Vételár (Ft)", type: "number", min: 0, step: 1000000 },
+                    { id: "downPayment", label: "Önerő (Ft)", type: "number", min: 0, step: 100000 },
+                    { id: "interestRate", label: "Hitel kamata (%)", type: "number", min: 0, max: 20, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const annualRent = data.rent * 12;
+                    const totalRentCost5Years = annualRent * 5;
+
+                    const loanAmount = data.purchasePrice - data.downPayment;
+                    const monthlyRate = data.interestRate / 100 / 12;
+                    const numberOfPayments5Years = 5 * 12;
+                    
+                    let monthlyPayment = 0;
+                    if (monthlyRate > 0) {
+                        monthlyPayment = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments5Years) / (Math.pow(1 + monthlyRate, numberOfPayments5Years) - 1);
+                    } else {
+                        monthlyPayment = loanAmount / numberOfPayments5Years;
+                    }
+                    
+                    const totalMortgageCost5Years = monthlyPayment * numberOfPayments5Years;
+
+                    return `**Bérlés 5 év alatt (összesen):** ${totalRentCost5Years.toLocaleString('hu-HU')} Ft<br>**Vásárlás költsége 5 év alatt (törlesztő):** ${Math.round(totalMortgageCost5Years).toLocaleString('hu-HU')} Ft<br><br>Ez a kalkuláció nem tartalmazza az adókat, karbantartási költségeket és az ingatlan értékének változását.`;
+                }
+            },
+            // 61-80: Oktatási és mérnöki kalkulátorok
+            {
+                id: 61,
+                name: "Átlag kalkulátor",
+                category: "education",
+                description: "Számítsa ki jegyeinek átlagát.",
+                inputs: [
+                    { id: "grades", label: "Jegyek (vesszővel elválasztva)", type: "text", placeholder: "4,5,3,5,4" }
+                ],
+                calculate: function(data) {
+                    const grades = data.grades.split(',').map(s => s.trim()).filter(s => s.length > 0).map(Number);
+                    if (grades.some(isNaN)) return "Hiba: Érvénytelen jegy(ek)et adott meg.";
+                    if (grades.length === 0) return "Adjon meg jegyeket a számításhoz.";
+                    
+                    const sum = grades.reduce((a, b) => a + b, 0);
+                    const average = sum / grades.length;
+                    
+                    return `Átlag: ${average.toFixed(2)}<br>Jegyek száma: ${grades.length}<br>Összeg: ${sum}`;
+                }
+            },
+            {
+                id: 62,
+                name: "Súlyozott átlag kalkulátor",
+                category: "education",
+                description: "Számítsa ki súlyozott átlagát kreditértékek vagy súlyok alapján.",
+                inputs: [
+                    { id: "grades", label: "Jegyek (vesszővel elválasztva)", type: "text", placeholder: "4,5,3,5,4" },
+                    { id: "weights", label: "Súlyok/Kreditek (vesszővel elválasztva)", type: "text", placeholder: "3,5,2,4,3" }
+                ],
+                calculate: function(data) {
+                    const grades = data.grades.split(',').map(s => s.trim()).filter(s => s.length > 0).map(Number);
+                    const weights = data.weights.split(',').map(s => s.trim()).filter(s => s.length > 0).map(Number);
+                    
+                    if (grades.length !== weights.length) return "Hiba: A jegyek és a súlyok számának meg kell egyeznie.";
+                    if (grades.some(isNaN) || weights.some(isNaN)) return "Hiba: Érvénytelen szám(ok)at adott meg.";
+                    
+                    let weightedSum = 0;
+                    let totalWeight = 0;
+                    
+                    for (let i = 0; i < grades.length; i++) {
+                        weightedSum += grades[i] * weights[i];
+                        totalWeight += weights[i];
+                    }
+                    
+                    const weightedAverage = weightedSum / totalWeight;
+                    
+                    return `Súlyozott átlag: ${weightedAverage.toFixed(2)}<br>Összes súly/kredit: ${totalWeight}`;
+                }
+            },
+            {
+                id: 63,
+                name: "GPA kalkulátor (pontrendszer)",
+                category: "education",
+                description: "Számítsa ki tanulmányi átlagát (Grade Point Average).",
+                inputs: [
+                    { id: "gpaPoints", label: "Pontértékek (vesszővel elválasztva - pl. 4.0, 3.5, 5.0)", type: "text", placeholder: "4.0, 3.5, 5.0" },
+                    { id: "credits", label: "Kreditértékek (vesszővel elválasztva)", type: "text", placeholder: "3, 4, 5" }
+                ],
+                calculate: function(data) {
+                    const points = data.gpaPoints.split(',').map(s => s.trim()).filter(s => s.length > 0).map(Number);
+                    const credits = data.credits.split(',').map(s => s.trim()).filter(s => s.length > 0).map(Number);
+                    
+                    if (points.length !== credits.length) return "Hiba: A pontok és a kreditek számának meg kell egyeznie.";
+                    if (points.some(isNaN) || credits.some(isNaN)) return "Hiba: Érvénytelen szám(ok)at adott meg.";
+
+                    let totalWeightedPoints = 0;
+                    let totalCredits = 0;
+                    
+                    for (let i = 0; i < points.length; i++) {
+                        totalWeightedPoints += points[i] * credits[i];
+                        totalCredits += credits[i];
+                    }
+                    
+                    const gpa = totalWeightedPoints / totalCredits;
+                    
+                    return `GPA: ${gpa.toFixed(2)}<br>Összes kredit: ${totalCredits}`;
+                }
+            },
+            {
+                id: 64,
+                name: "Egység átváltó",
+                category: "engineering",
+                description: "Átváltja a gyakori mértékegységeket.",
+                inputs: [
+                    { id: "value", label: "Átváltandó érték", type: "number", min: 0, step: 0.1 },
+                    { id: "unitType", label: "Egység típusa", type: "select", options: ["Hossz", "Tömeg", "Terület", "Térfogat"] }
+                ],
+                calculate: function(data) {
+                    let result = "";
+                    
+                    switch(data.unitType) {
+                        case "Hossz":
+                            result = `${data.value} méter =<br>${(data.value * 100).toFixed(2)} cm<br>${(data.value / 1000).toFixed(6)} km<br>${(data.value * 39.37).toFixed(2)} inch<br>${(data.value * 3.281).toFixed(2)} foot`;
+                            break;
+                        case "Tömeg":
+                            result = `${data.value} kg =<br>${(data.value * 1000).toFixed(2)} g<br>${(data.value / 1000).toFixed(6)} tonna<br>${(data.value * 35.274).toFixed(2)} ounce<br>${(data.value * 2.205).toFixed(2)} pound`;
+                            break;
+                        case "Terület":
+                            result = `${data.value} m² =<br>${(data.value * 10000).toFixed(2)} cm²<br>${(data.value / 10000).toFixed(6)} hektár<br>${(data.value * 10.764).toFixed(2)} ft²<br>${(data.value * 1550).toFixed(2)} in²`;
+                            break;
+                        case "Térfogat":
+                            result = `${data.value} liter =<br>${(data.value * 1000).toFixed(2)} ml<br>${(data.value / 1000).toFixed(6)} m³<br>${(data.value * 0.264).toFixed(2)} gallon<br>${(data.value * 2.113).toFixed(2)} pint`;
+                            break;
+                        default:
+                            result = "Válasszon egységtípust.";
+                    }
+                    
+                    return result;
+                }
+            },
+            {
+                id: 65,
+                name: "Térfogat (kocka/téglatest)",
+                category: "engineering",
+                description: "Kiszámítja egy kocka vagy téglatest térfogatát és felületét.",
+                inputs: [
+                    { id: "length", label: "Hossz (m)", type: "number", min: 0.1, step: 0.1 },
+                    { id: "width", label: "Szélesség (m)", type: "number", min: 0.1, step: 0.1 },
+                    { id: "height", label: "Magasság (m)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const volume = data.length * data.width * data.height;
+                    const surfaceArea = 2 * (data.length * data.width + data.length * data.height + data.width * data.height);
+                    
+                    return `Térfogat: ${volume.toFixed(2)} m³<br>Felszín: ${surfaceArea.toFixed(2)} m²`;
+                }
+            },
+            {
+                id: 66,
+                name: "Kör területe és kerülete",
+                category: "engineering",
+                description: "Kiszámítja a kör területét és kerületét sugár alapján.",
+                inputs: [
+                    { id: "radius", label: "Sugár (r)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const area = Math.PI * data.radius * data.radius;
+                    const circumference = 2 * Math.PI * data.radius;
+                    
+                    return `Terület: ${area.toFixed(2)}<br>Kerület: ${circumference.toFixed(2)}`;
+                }
+            },
+            {
+                id: 67,
+                name: "Ohm törvény kalkulátor",
+                category: "engineering",
+                description: "Kiszámítja az áramot, feszültséget vagy ellenállást.",
+                inputs: [
+                    { id: "knownValue", label: "Ismert érték", type: "number", min: 0.001, step: 0.01 },
+                    { id: "knownUnit", label: "Ismert egység", type: "select", options: ["Feszültség (V)", "Áram (A)", "Ellenállás (Ohm)"] },
+                    { id: "secondValue", label: "Másik ismert érték", type: "number", min: 0.001, step: 0.01 },
+                    { id: "secondUnit", label: "Másik ismert egység", type: "select", options: ["Feszültség (V)", "Áram (A)", "Ellenállás (Ohm)"] }
+                ],
+                calculate: function(data) {
+                    let V, I, R;
+                    
+                    const unitMap = { "Feszültség (V)": "V", "Áram (A)": "I", "Ellenállás (Ohm)": "R" };
+                    const value1 = data.knownValue;
+                    const unit1 = unitMap[data.knownUnit];
+                    const value2 = data.secondValue;
+                    const unit2 = unitMap[data.secondUnit];
+                    
+                    if (unit1 === unit2) return "Hiba: Két különböző paramétert kell megadni.";
+                    
+                    if (unit1 === "V") V = value1; else if (unit1 === "I") I = value1; else R = value1;
+                    if (unit2 === "V") V = value2; else if (unit2 === "I") I = value2; else R = value2;
+                    
+                    let result = "";
+                    if (V === undefined) {
+                        V = I * R;
+                        result = `Feszültség (V): ${V.toFixed(2)} V`;
+                    } else if (I === undefined) {
+                        I = V / R;
+                        result = `Áram (I): ${I.toFixed(2)} A`;
+                    } else {
+                        R = V / I;
+                        result = `Ellenállás (R): ${R.toFixed(2)} Ω`;
+                    }
+                    
+                    return result;
+                }
+            },
+            {
+                id: 68,
+                name: "Hőmérséklet átváltó",
+                category: "engineering",
+                description: "Átváltja a hőmérsékletet Celsius, Fahrenheit és Kelvin között.",
+                inputs: [
+                    { id: "value", label: "Érték", type: "number", step: 0.1 },
+                    { id: "unit", label: "Eredeti egység", type: "select", options: ["Celsius (°C)", "Fahrenheit (°F)", "Kelvin (K)"] }
+                ],
+                calculate: function(data) {
+                    let C, F, K;
+                    const v = data.value;
+                    
+                    if (data.unit === "Celsius (°C)") {
+                        C = v;
+                        F = (C * 9 / 5) + 32;
+                        K = C + 273.15;
+                    } else if (data.unit === "Fahrenheit (°F)") {
+                        F = v;
+                        C = (F - 32) * 5 / 9;
+                        K = C + 273.15;
+                    } else { // Kelvin
+                        K = v;
+                        C = K - 273.15;
+                        F = (C * 9 / 5) + 32;
+                    }
+                    
+                    return `Celsius: ${C.toFixed(2)} °C<br>Fahrenheit: ${F.toFixed(2)} °F<br>Kelvin: ${K.toFixed(2)} K`;
+                }
+            },
+            {
+                id: 69,
+                name: "Geometriai felület (Háromszög)",
+                category: "engineering",
+                description: "Kiszámítja a háromszög területét alap és magasság alapján.",
+                inputs: [
+                    { id: "base", label: "Alap (a)", type: "number", min: 0.1, step: 0.1 },
+                    { id: "height", label: "Magasság (m)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const area = (data.base * data.height) / 2;
+                    
+                    return `Terület: ${area.toFixed(2)}`;
+                }
+            },
+            {
+                id: 70,
+                name: "Kúptérfogat",
+                category: "engineering",
+                description: "Kiszámítja a kúp térfogatát sugár és magasság alapján.",
+                inputs: [
+                    { id: "radius", label: "Sugár (r)", type: "number", min: 0.1, step: 0.1 },
+                    { id: "height", label: "Magasság (m)", type: "number", min: 0.1, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const volume = (1 / 3) * Math.PI * data.radius * data.radius * data.height;
+                    
+                    return `Térfogat: ${volume.toFixed(2)}`;
+                }
+            },
+            {
+                id: 71,
+                name: "Fajsúly (Sűrűség) kalkulátor",
+                category: "engineering",
+                description: "Kiszámítja az anyag sűrűségét tömeg és térfogat alapján.",
+                inputs: [
+                    { id: "mass", label: "Tömeg (kg)", type: "number", min: 0.001, step: 0.001 },
+                    { id: "volume", label: "Térfogat (m³)", type: "number", min: 0.001, step: 0.001 }
+                ],
+                calculate: function(data) {
+                    const density = data.mass / data.volume;
+                    
+                    return `Sűrűség: ${density.toFixed(2)} kg/m³<br>Ez a sűrűség a(z) ${density < 1000 ? 'víznél kisebb' : 'víznél nagyobb'}.`;
+                }
+            },
+            {
+                id: 72,
+                name: "Sebesség/Idő/Távolság",
+                category: "engineering",
+                description: "Számítsa ki a sebességet, időt vagy távolságot a másik kettőből.",
+                inputs: [
+                    { id: "known1", label: "Ismert érték 1", type: "number", min: 0.01, step: 0.1 },
+                    { id: "unit1", label: "Egység 1", type: "select", options: ["Sebesség (km/h)", "Idő (óra)", "Távolság (km)"] },
+                    { id: "known2", label: "Ismert érték 2", type: "number", min: 0.01, step: 0.1 },
+                    { id: "unit2", label: "Egység 2", type: "select", options: ["Sebesség (km/h)", "Idő (óra)", "Távolság (km)"] }
+                ],
+                calculate: function(data) {
+                    let S, T, D; // Speed, Time, Distance
+                    
+                    const unitMap = { "Sebesség (km/h)": "S", "Idő (óra)": "T", "Távolság (km)": "D" };
+                    
+                    const values = [
+                        { val: data.known1, unit: unitMap[data.unit1] },
+                        { val: data.known2, unit: unitMap[data.unit2] }
+                    ];
+                    
+                    values.forEach(v => {
+                        if (v.unit === "S") S = v.val;
+                        else if (v.unit === "T") T = v.val;
+                        else D = v.val;
+                    });
+                    
+                    let result = "";
+                    if (S === undefined) {
+                        S = D / T;
+                        result = `Sebesség (km/h): ${S.toFixed(2)} km/h`;
+                    } else if (T === undefined) {
+                        T = D / S;
+                        result = `Idő (óra): ${T.toFixed(2)} óra`;
+                    } else {
+                        D = S * T;
+                        result = `Távolság (km): ${D.toFixed(2)} km`;
+                    }
+                    
+                    return result;
+                }
+            },
+            {
+                id: 73,
+                name: "Exponenciális növekedés/bomlás",
+                category: "engineering",
+                description: "Kiszámítja a jövőbeli értéket exponenciális növekedés vagy bomlás esetén.",
+                inputs: [
+                    { id: "initialAmount", label: "Kezdeti érték", type: "number", min: 0, step: 1 },
+                    { id: "rate", label: "Növekedési/bomlási ráta (%)", type: "number", step: 0.1 },
+                    { id: "time", label: "Idő (év)", type: "number", min: 0, step: 1 }
+                ],
+                calculate: function(data) {
+                    const r = data.rate / 100;
+                    const finalAmount = data.initialAmount * Math.pow(1 + r, data.time);
+                    
+                    return `Végső érték: ${finalAmount.toFixed(2)}<br>${r > 0 ? 'Növekedés' : 'Bomlás'} történt: ${(finalAmount - data.initialAmount).toFixed(2)}`;
+                }
+            },
+            {
+                id: 74,
+                name: "Logaritmus kalkulátor",
+                category: "education",
+                description: "Kiszámítja a logaritmust megadott alapra.",
+                inputs: [
+                    { id: "number", label: "Szám (x)", type: "number", min: 0.001, step: 0.01 },
+                    { id: "base", label: "Alap (b)", type: "number", min: 0.001, step: 0.01 }
+                ],
+                calculate: function(data) {
+                    if (data.number <= 0 || data.base <= 0 || data.base === 1) return "Hiba: Érvénytelen logaritmus alap vagy szám (log(x, b), x>0, b>0, b!=1).";
+                    
+                    const logValue = Math.log(data.number) / Math.log(data.base);
+                    
+                    return `log${data.base}(${data.number}) = ${logValue.toFixed(4)}`;
+                }
+            },
+            {
+                id: 75,
+                name: "Lineáris egyenlet megoldó",
+                category: "education",
+                description: "Megoldja az ax + b = c formájú egyenletet.",
+                inputs: [
+                    { id: "a", label: "a (x együtthatója)", type: "number", step: 0.1 },
+                    { id: "b", label: "b (állandó)", type: "number", step: 0.1 },
+                    { id: "c", label: "c (eredmény)", type: "number", step: 0.1 }
+                ],
+                calculate: function(data) {
+                    if (data.a === 0) {
+                        return data.b === data.c ? "Az egyenlet minden x-re igaz (végtelen megoldás)." : "Nincs megoldása az egyenletnek (0x = c-b).";
+                    }
+                    
+                    const x = (data.c - data.b) / data.a;
+                    
+                    return `Az egyenlet megoldása (x): ${x.toFixed(4)}`;
+                }
+            },
+            {
+                id: 76,
+                name: "Másodfokú egyenlet megoldó",
+                category: "education",
+                description: "Megoldja az ax² + bx + c = 0 formájú egyenletet (gyökök).",
+                inputs: [
+                    { id: "a", label: "a (x² együtthatója)", type: "number", step: 0.1 },
+                    { id: "b", label: "b (x együtthatója)", type: "number", step: 0.1 },
+                    { id: "c", label: "c (állandó)", type: "number", step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const D = data.b * data.b - 4 * data.a * data.c;
+                    
+                    if (D < 0) {
+                        return "Az egyenletnek nincs valós megoldása (negatív diszkrimináns).";
+                    } else if (D === 0) {
+                        const x = -data.b / (2 * data.a);
+                        return `Egy valós megoldás (x): ${x.toFixed(4)}`;
+                    } else {
+                        const x1 = (-data.b + Math.sqrt(D)) / (2 * data.a);
+                        const x2 = (-data.b - Math.sqrt(D)) / (2 * data.a);
+                        return `Két valós megoldás:<br>x1: ${x1.toFixed(4)}<br>x2: ${x2.toFixed(4)}`;
+                    }
+                }
+            },
+            {
+                id: 77,
+                name: "Trigonometria (Pitagorasz)",
+                category: "education",
+                description: "Kiszámítja a derékszögű háromszög hiányzó oldalát (a² + b² = c²).",
+                inputs: [
+                    { id: "sideA", label: "a oldal (ismert, 0 ha ismeretlen)", type: "number", min: 0, step: 0.1 },
+                    { id: "sideB", label: "b oldal (ismert, 0 ha ismeretlen)", type: "number", min: 0, step: 0.1 },
+                    { id: "sideC", label: "c oldal (átfogó, ismert, 0 ha ismeretlen)", type: "number", min: 0, step: 0.1 }
+                ],
+                calculate: function(data) {
+                    const countKnown = [data.sideA, data.sideB, data.sideC].filter(v => v > 0).length;
+                    if (countKnown !== 2) return "Hiba: Pontosan két oldalt kell megadnia a számításhoz.";
+                    
+                    let result = "";
+                    if (data.sideC === 0) {
+                        const c = Math.sqrt(data.sideA * data.sideA + data.sideB * data.sideB);
+                        result = `Az átfogó (c) hossza: ${c.toFixed(2)}`;
+                    } else if (data.sideA === 0) {
+                        const a = Math.sqrt(data.sideC * data.sideC - data.sideB * data.sideB);
+                        result = `Az 'a' oldal hossza: ${a.toFixed(2)}`;
+                    } else { // sideB === 0
+                        const b = Math.sqrt(data.sideC * data.sideC - data.sideA * data.sideA);
+                        result = `A 'b' oldal hossza: ${b.toFixed(2)}`;
+                    }
+
+                    return result;
+                }
+            },
+            {
+                id: 78,
+                name: "Szög átváltó",
+                category: "education",
+                description: "Átváltja a szöget fok és radián között.",
+                inputs: [
+                    { id: "value", label: "Érték", type: "number", step: 0.1 },
+                    { id: "unit", label: "Eredeti egység", type: "select", options: ["Fok (°)","Radián"] }
+                ],
+                calculate: function(data) {
+                    let result = "";
+                    if (data.unit === "Fok (°)") {
+                        const radian = data.value * (Math.PI / 180);
+                        result = `${data.value}° = ${radian.toFixed(4)} radián`;
+                    } else {
+                        const degree = data.value * (180 / Math.PI);
+                        result = `${data.value} radián = ${degree.toFixed(4)}°`;
+                    }
+                    return result;
+                }
+            },
+            {
+                id: 79,
+                name: "Bináris-Decimális átváltó",
+                category: "engineering",
+                description: "Átvált a bináris (kettes) és decimális (tízes) számrendszer között.",
+                inputs: [
+                    { id: "value", label: "Szám (bináris vagy decimális)", type: "text" },
+                    { id: "unit", label: "Eredeti egység", type: "select", options: ["Decimális", "Bináris"] }
+                ],
+                calculate: function(data) {
+                    const value = data.value.trim();
+                    let result = "";
+                    
+                    if (data.unit === "Decimális") {
+                        const num = parseInt(value, 10);
+                        if (isNaN(num)) return "Hiba: Érvénytelen decimális szám.";
+                        result = `Bináris: ${num.toString(2)}`;
+                    } else {
+                        if (!/^[01]+$/.test(value)) return "Hiba: Érvénytelen bináris szám.";
+                        const num = parseInt(value, 2);
+                        result = `Decimális: ${num}`;
+                    }
+                    return result;
+                }
+            },
+            {
+                id: 80,
+                name: "Hálózat (IP alhálózat)",
+                category: "engineering",
+                description: "Kiszámítja a hálózati osztályt és a tartományt egy IP-címhez (egyszerűsített).",
+                inputs: [
+                    { id: "ipAddress", label: "IP-cím (pl. 192.168.1.1)", type: "text" }
+                ],
+                calculate: function(data) {
+                    const parts = data.ipAddress.split('.').map(Number);
+                    if (parts.length !== 4 || parts.some(isNaN) || parts.some(p => p < 0 || p > 255)) {
+                        return "Hiba: Érvénytelen IP-cím formátum.";
+                    }
+                    
+                    const firstOctet = parts[0];
+                    let networkClass = "";
+                    let range = "";
+                    
+                    if (firstOctet >= 1 && firstOctet <= 126) {
+                        networkClass = "A osztály";
+                        range = "1.0.0.0 - 126.255.255.255";
+                    } else if (firstOctet >= 128 && firstOctet <= 191) {
+                        networkClass = "B osztály";
+                        range = "128.0.0.0 - 191.255.255.255";
+                    } else if (firstOctet >= 192 && firstOctet <= 223) {
+                        networkClass = "C osztály";
+                        range = "192.0.0.0 - 223.255.255.255";
+                    } else {
+                        networkClass = "Egyéb/fenntartott";
+                        range = "224.0.0.0 felett vagy 0/127";
+                    }
+                    
+                    return `Hálózati osztály: ${networkClass}<br>Tartomány: ${range}`;
+                }
+            },
+            // 81-83: ÚJ KALKULÁTOROK (Egészség, Üzlet, Idő)
+            {
+                id: 81,
+                name: "BMI Kalkulátor (Egyszerűsített)",
+                category: "health",
+                description: "Számítsa ki a Testtömeg-indexét és értékelje.",
+                inputs: [
+                    { id: "weight", label: "Testsúly (kg)", type: "number", min: 1, step: 0.1 },
+                    { id: "height", label: "Magasság (cm)", type: "number", min: 1, step: 1 }
+                ],
+                calculate: function(data) {
+                    const weight = data.weight;
+                    const heightM = data.height / 100;
+                    const bmi = weight / (heightM * heightM);
+                    
+                    let category = "";
+                    if (bmi < 18.5) category = "Sovány";
+                    else if (bmi < 25) category = "Egészséges súlyú";
+                    else if (bmi < 30) category = "Túlsúlyos";
+                    else category = "Elhízott";
+
+                    return `**BMI:** ${bmi.toFixed(2)}<br>**Kategória:** ${category}`;
+                }
+            },
+            {
+                id: 82,
+                name: "Profitmarzs Kalkulátor",
+                category: "business",
+                description: "Számítsa ki a profitot és a profitmarzsot (üzleti nyereséget).",
+                inputs: [
+                    { id: "revenue", label: "Teljes Bevétel (Ft)", type: "number", min: 0, step: 1000 },
+                    { id: "cost", label: "Összes Költség (Ft)", type: "number", min: 0, step: 1000 }
+                ],
+                calculate: function(data) {
+                    const revenue = data.revenue;
+                    const cost = data.cost;
+                    const profit = revenue - cost;
+                    
+                    if (revenue <= 0) {
+                        return "A bevételnek nagyobbnak kell lennie nullánál a profitmarzs számításához.";
+                    }
+                    
+                    const margin = (profit / revenue) * 100;
+
+                    return `**Profit:** ${profit.toLocaleString('hu-HU')} Ft<br>**Profitmarzs:** ${margin.toFixed(2)}%`;
+                }
+            },
+            {
+                id: 83,
+                name: "Munkaóra Kalkulátor",
+                category: "time",
+                description: "Kiszámolja a ledolgozott órák számát a szünetekkel csökkentve.",
+                inputs: [
+                    { id: "startHour", label: "Kezdés óra (24h)", type: "number", min: 0, max: 23, step: 1 },
+                    { id: "startMinute", label: "Kezdés perc", type: "number", min: 0, max: 59, step: 1 },
+                    { id: "endHour", label: "Befejezés óra (24h)", type: "number", min: 0, max: 23, step: 1 },
+                    { id: "endMinute", label: "Befejezés perc", type: "number", min: 0, max: 59, step: 1 },
+                    { id: "breakMinutes", label: "Szünet (perc)", type: "number", min: 0, step: 5 }
+                ],
+                calculate: function(data) {
+                    const startTotalMinutes = data.startHour * 60 + data.startMinute;
+                    const endTotalMinutes = data.endHour * 60 + data.endMinute;
+                    
+                    // Kezeli a másnapi befejezést, ha az end < start
+                    let workedMinutes = endTotalMinutes - startTotalMinutes;
+                    if (workedMinutes < 0) {
+                        workedMinutes += 24 * 60; // Hozzáad egy napot
+                    }
+                    
+                    const netMinutes = workedMinutes - data.breakMinutes;
+                    
+                    if (netMinutes < 0) {
+                        return "Hiba: A szünetidő hosszabb, mint a munkaidő!";
+                    }
+                    
+                    const netHours = Math.floor(netMinutes / 60);
+                    const netRemainingMinutes = netMinutes % 60;
+
+                    return `**Ledolgozott nettó idő:** ${netHours} óra ${netRemainingMinutes} perc<br>Összesen (tizedes tört): ${(netMinutes / 60).toFixed(2)} óra`;
+                }
+            },
+            // 84-100: További kalkulátorok (Placeholder - Várható fejlesztések)
+            { id: 84, name: "ÁFA Fordító (Business)", category: "business", description: "ÁFA-tartalom gyors kiszámítása bruttó árból (business).", inputs: [{ id: "gross", label: "Bruttó ár (Ft)", type: "number" }, { id: "rate", label: "ÁFA (%)", type: "number", step: 0.1 }], calculate: (d) => `Nettó: ${(d.gross / (1 + d.rate / 100)).toFixed(0)} Ft | ÁFA: ${(d.gross - (d.gross / (1 + d.rate / 100))).toFixed(0)} Ft`},
+            { id: 85, name: "Időzóna átváltó", category: "time", description: "Átváltja az időt két különböző időzóna között.", inputs: [{ id: "time", label: "Idő (HH:MM)", type: "text", placeholder: "14:30" }, { id: "from", label: "Forrászóna", type: "text", placeholder: "CET" }, { id: "to", label: "Célzóna", type: "text", placeholder: "EST" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 86, name: "Projekt határidő kalkulátor", category: "time", description: "Kiszámítja a projekt befejezési dátumát a megmaradt munka alapján.", inputs: [{ id: "work", label: "Megmaradt munka (óra)", type: "number" }, { id: "team", label: "Csapatméret (fő)", type: "number" }, { id: "hours", label: "Napi munkaóra/fő", type: "number" }], calculate: (d) => `Napok száma: ${(d.work / (d.team * d.hours)).toFixed(1)} nap`},
+            { id: 87, name: "Tételszám kalkulátor (Lottó)", category: "education", description: "Kiszámítja a lehetséges kombinációk számát (kombinatorika).", inputs: [{ id: "n", label: "Összes elem (n)", type: "number" }, { id: "k", label: "Választott elem (k)", type: "number" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 88, name: "Dátum különbség kalkulátor", category: "time", description: "Kiszámítja a napok, órák és percek számát két dátum között.", inputs: [{ id: "date1", label: "Kezdő dátum", type: "text" }, { id: "date2", label: "Vég dátum", type: "text" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 89, name: "Hőtágulás kalkulátor", category: "engineering", description: "Kiszámítja az anyagok hőtágulását hőmérséklet-változás esetén.", inputs: [{ id: "initial", label: "Kezdő hossz (m)", type: "number" }, { id: "coeff", label: "Tágulási együttható", type: "number" }, { id: "temp", label: "Hőmérséklet-változás (°C)", type: "number" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 90, name: "Szakasz felezőpont kalkulátor", category: "education", description: "Kiszámítja a szakasz felezőpontjának koordinátáit.", inputs: [{ id: "x1", label: "X1", type: "number" }, { id: "y1", label: "Y1", type: "number" }, { id: "x2", label: "X2", type: "number" }, { id: "y2", label: "Y2", type: "number" }], calculate: (d) => `Felezőpont: (${((d.x1 + d.x2) / 2).toFixed(2)}, ${((d.y1 + d.y2) / 2).toFixed(2)})`},
+            { id: 91, name: "ROI Kalkulátor (Általános)", category: "business", description: "Számítja ki a befektetés megtérülési rátáját (Return on Investment).", inputs: [{ id: "gain", label: "Befektetés nyeresége (Ft)", type: "number" }, { id: "cost", label: "Befektetés költsége (Ft)", type: "number" }], calculate: (d) => `ROI: ${((d.gain - d.cost) / d.cost * 100).toFixed(2)} %`},
+            { id: 92, name: "Havi bevétel cél (Business)", category: "business", description: "Kiszámítja a szükséges havi értékesítési célt.", inputs: [{ id: "target", label: "Éves profit cél (Ft)", type: "number" }, { id: "margin", label: "Átlagos profit marzs (%)", type: "number" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 93, name: "Jármű súly-teljesítmény", category: "auto", description: "Kiszámítja a jármű tömeg/teljesítmény arányát.", inputs: [{ id: "weight", label: "Tömeg (kg)", type: "number" }, { id: "power", label: "Teljesítmény (LE)", type: "number" }], calculate: (d) => `Tömeg/teljesítmény arány: ${(d.weight / d.power).toFixed(2)} kg/LE`},
+            { id: 94, name: "Gumiabroncs csere átmérő", category: "auto", description: "Kiszámítja a kerékátmérő eltérését új gumiabronccsal.", inputs: [{ id: "oldWidth", label: "Régi szélesség (mm)", type: "number" }, { id: "oldRatio", label: "Régi arány (%)", type: "number" }, { id: "oldWheel", label: "Régi kerék (coll)", type: "number" }, { id: "newWidth", label: "Új szélesség (mm)", type: "number" }, { id: "newRatio", label: "Új arány (%)", type: "number" }, { id: "newWheel", label: "Új kerék (coll)", type: "number" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 95, name: "Helyi adó kalkulátor (Település)", category: "finance", description: "Becsüli a helyi adó mértékét (egyszerűsített).", inputs: [{ id: "value", label: "Adóalap (Ft)", type: "number" }, { id: "rate", label: "Adókulcs (százalékban)", type: "number" }], calculate: (d) => `Fizetendő adó: ${(d.value * (d.rate / 100)).toFixed(0)} Ft`},
+            { id: 96, name: "Testmozgás kalória kalkulátor", category: "health", description: "Becsüli az elégetett kalóriák számát mozgás közben.", inputs: [{ id: "weight", label: "Testsúly (kg)", type: "number" }, { id: "mets", label: "MET érték (pl. Futás: 8)", type: "number" }, { id: "duration", label: "Időtartam (perc)", type: "number" }], calculate: (d) => `Elégetett kalória: ${((d.mets * 3.5 * d.weight) / 200 * d.duration).toFixed(0)} kcal`},
+            { id: 97, name: "Erő/Nyomás kalkulátor", category: "engineering", description: "Kiszámítja a nyomást erő és felület alapján (P=F/A).", inputs: [{ id: "force", label: "Erő (Newton)", type: "number" }, { id: "area", label: "Felület (m²)", type: "number" }], calculate: (d) => `Nyomás: ${(d.force / d.area).toFixed(2)} Pascal`},
+            { id: 98, name: "Üzleti költség megosztás", category: "business", description: "Kiszámítja a költségek elosztását partnerek között.", inputs: [{ id: "total", label: "Teljes költség (Ft)", type: "number" }, { id: "share1", label: "1. partner aránya (%)", type: "number" }, { id: "share2", label: "2. partner aránya (%)", type: "number" }], calculate: (d) => `1. partner fizet: ${(d.total * (d.share1 / 100)).toFixed(0)} Ft | 2. partner fizet: ${(d.total * (d.share2 / 100)).toFixed(0)} Ft`},
+            { id: 99, name: "Dátum/Hét számítás", category: "time", description: "Kiszámítja, hogy egy adott dátum az év hányadik hetére esik.", inputs: [{ id: "date", label: "Dátum (YYYY-MM-DD)", type: "text", placeholder: "2023-12-31" }], calculate: () => "A számítás implementálása még folyamatban..."},
+            { id: 100, name: "Jövőbeli nettó érték (NPV)", category: "finance", description: "Kiszámítja a Nettó Jelenértéket diszkontráta alapján (egyszerűsített).", inputs: [{ id: "cashflow1", label: "1. év Cash Flow (Ft)", type: "number" }, { id: "cashflow2", label: "2. év Cash Flow (Ft)", type: "number" }, { id: "rate", label: "Diszkontráta (%)", type: "number" }, { id: "initial", label: "Kezdő befektetés (Ft)", type: "number" }], calculate: () => "A számítás implementálása még folyamatban..."}
+        ];
+
+        // Jelenlegi nyelv (magyar)
+        const currentLanguage = 'hu';
+
+        // DOM elemek
+        const calculatorsContainer = document.getElementById('calculators-container');
+        const calculatorModal = document.getElementById('calculator-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const calculatorForm = document.getElementById('calculator-form');
+        const calculatorResult = document.getElementById('calculator-result');
+        const resultText = document.getElementById('result-text');
+        const closeModal = document.getElementById('close-modal');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        // Fordítások (egyszerűsített, csak a gombokhoz)
+        const huTranslations = {
+            "searchPlaceholder": "Keressen kalkulátort...",
+            "searchButton": "Keresés",
+            "result": "Eredmény:",
+            "calculate": "Számolás",
+            "reset": "Alaphelyzet"
+        };
+
+
+        // Kalkulátor kártyák betöltése
+        function loadCalculators(filteredCalculators = calculators) {
+            calculatorsContainer.innerHTML = '';
+            
+            // Jelenleg a 10 legutóbbi és legnépszerűbb kalkulátort jelenítjük meg
+            const displayLimit = 10;
+            const calculatorsToDisplay = filteredCalculators.slice(0, displayLimit);
+
+            calculatorsToDisplay.forEach(calculator => {
+                const card = document.createElement('div');
+                card.className = 'calculator-card';
+                card.innerHTML = `
+                    <h3>${calculator.name}</h3>
+                    <p>${calculator.description}</p>
+                    <button class="btn use-calculator" data-id="${calculator.id}">Használom</button>
+                `;
+                calculatorsContainer.appendChild(card);
+            });
+            
+            // Eseménykezelők hozzáadása
+            document.querySelectorAll('.use-calculator').forEach(button => {
+                button.addEventListener('click', function() {
+                    const calculatorId = parseInt(this.getAttribute('data-id'));
+                    openCalculator(calculatorId);
+                });
+            });
+        }
+
+        // Kalkulátor megnyitása
+        function openCalculator(calculatorId) {
+            const calculator = calculators.find(c => c.id === calculatorId);
+            if (!calculator) return;
+            
+            modalTitle.textContent = calculator.name;
+            calculatorForm.innerHTML = '';
+            
+            // UX TÖBBES JAVÍTÁS: ŰRLAP ÉS EREDMÉNY RESETELÉSE
+            calculatorForm.reset();
+            calculatorResult.style.display = 'none';
+            resultText.innerHTML = '';
+            
+            // Input mezők létrehozása
+            calculator.inputs.forEach(input => {
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                
+                const label = document.createElement('label');
+                label.textContent = input.label;
+                label.setAttribute('for', input.id);
+                
+                let inputElement;
+                
+                if (input.type === 'select') {
+                    inputElement = document.createElement('select');
+                    inputElement.id = input.id;
+                    inputElement.name = input.id;
+                    
+                    input.options.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.textContent = option;
+                        inputElement.appendChild(optionElement);
+                    });
+                } else {
+                    inputElement = document.createElement('input');
+                    inputElement.type = input.type;
+                    inputElement.id = input.id;
+                    inputElement.name = input.id;
+                    
+                    if (input.min !== undefined) inputElement.min = input.min;
+                    if (input.max !== undefined) inputElement.max = input.max;
+                    if (input.step !== undefined) inputElement.step = input.step;
+                    if (input.placeholder) inputElement.placeholder = input.placeholder;
+                }
+                
+                formGroup.appendChild(label);
+                formGroup.appendChild(inputElement);
+                calculatorForm.appendChild(formGroup);
+            });
+            
+            // Gombok hozzáadása
+            const buttonGroup = document.createElement('div');
+            buttonGroup.className = 'form-group';
+            buttonGroup.style.display = 'flex';
+            buttonGroup.style.gap = '10px';
+            
+            const calculateButton = document.createElement('button');
+            calculateButton.type = 'button'; // Megakadályozza az űrlap elküldését
+            calculateButton.className = 'btn';
+            calculateButton.textContent = huTranslations.calculate;
+            calculateButton.addEventListener('click', function() {
+                calculateResult(calculator);
+            });
+            
+            const resetButton = document.createElement('button');
+            resetButton.type = 'reset';
+            resetButton.className = 'btn';
+            resetButton.textContent = huTranslations.reset;
+            resetButton.style.backgroundColor = '#6c757d';
+            resetButton.addEventListener('click', function() {
+                // A type='reset' intézi az űrlap mezők resetelését
+                calculatorResult.style.display = 'none';
+                resultText.innerHTML = '';
+            });
+            
+            buttonGroup.appendChild(calculateButton);
+            buttonGroup.appendChild(resetButton);
+            calculatorForm.appendChild(buttonGroup);
+            
+            // Modal megjelenítése
+            calculatorModal.style.display = 'block';
+        }
+
+        // Eredmény kiszámítása
+        function calculateResult(calculator) {
+            const formData = new FormData(calculatorForm);
+            const data = {};
+            
+            calculator.inputs.forEach(input => {
+                const value = formData.get(input.id);
+                if (input.type === 'number') {
+                    data[input.id] = parseFloat(value);
+                } else {
+                    data[input.id] = value;
+                }
+            });
+            
+            try {
+                const result = calculator.calculate(data);
+                resultText.innerHTML = result;
+                calculatorResult.style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                resultText.textContent = 'Hiba történt a számítás során. Kérjük, ellenőrizze a bevitt adatokat.';
+                calculatorResult.style.display = 'block';
+            }
+        }
+
+        // Keresés funkció
+        function searchCalculators() {
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm.trim() === '') {
+                // Ha üres a kereső, töltse be a 10 népszerű kalkulátort (a tömb elejét)
+                loadCalculators();
+                return;
+            }
+            
+            const filteredCalculators = calculators.filter(calculator => 
+                calculator.name.toLowerCase().includes(searchTerm) || 
+                calculator.description.toLowerCase().includes(searchTerm)
+            );
+            
+            loadCalculators(filteredCalculators);
+        }
+
+        // Eseménykezelők
+        closeModal.addEventListener('click', function() {
+            calculatorModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === calculatorModal) {
+                calculatorModal.style.display = 'none';
+            }
+        });
+
+        searchButton.addEventListener('click', searchCalculators);
+
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchCalculators();
+            }
+        });
+
+        // Kategóriák szűrése
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                const filteredCalculators = calculators.filter(calculator => 
+                    calculator.category === category
+                );
+                // A kategória szűrésnél megjelenítjük az összes szűrt kalkulátort
+                loadCalculators(filteredCalculators);
+            });
+        });
+
+        // Kalkulátor linkek a láblécben
+        document.querySelectorAll('.calculator-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const calculatorId = parseInt(this.getAttribute('data-id'));
+                openCalculator(calculatorId);
+            });
+        });
+
+        // Oldal betöltése
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCalculators(); // Kezdetben csak a legnépszerűbb 10-et tölti be
+        });
+    </script>
+
+<!-- Modern Google Ads Popup - injected -->
+<style>
+#ads-popup {
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.45);
+    z-index:99999;
+    justify-content:center;
+    align-items:center;
+}
+#ads-box {
+    position: relative;
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    width:90%;
+    max-width:450px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.25);
+    transform: scale(0.7);
+    opacity:0;
+    animation: adsZoom 0.28s ease forwards;
+}
+@keyframes adsZoom {
+    from { transform:scale(0.7); opacity:0; }
+    to   { transform:scale(1);   opacity:1; }
+}
+#ads-close {
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:30px;
+    cursor:pointer;
+}
+</style>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9376230780431989"
+     crossorigin="anonymous"></script>
+
+<div id="ads-popup">
+    <div id="ads-box">
+        <span id="ads-close">&times;</span>
+
+        <ins class="adsbygoogle"
+             style="display:block;width:300px;height:250px"
+             data-ad-client="ca-pub-9376230780431989"
+             data-ad-slot="3308865248"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </div>
+</div>
+
+<script>
+let calculationCount = 0;
+
+function showAdsPopup() {
+    var popup = document.getElementById('ads-popup');
+    if (popup) popup.style.display = 'flex';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var popup = document.getElementById('ads-popup');
+    var closeBtn = document.getElementById('ads-close');
+    if (popup && closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            popup.style.display = 'none';
+        });
+        popup.addEventListener('click', function(e) {
+            if (e.target === popup) popup.style.display = 'none';
+        });
+    }
+
+    var form = document.getElementById('calculator-form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            calculationCount++;
+            if (calculationCount % 3 === 0) {
+                showAdsPopup();
+            }
+        });
+    }
+});
+</script>
+<!-- End Google Ads Popup -->
+
+</body>
+</html>
